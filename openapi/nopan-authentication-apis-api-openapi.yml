@@ -1,0 +1,142 @@
+openapi: 3.0.3
+info:
+  version: v1
+  title: Nopan Authentication APIs API
+  description: 'Download Nopan Postman collection: [Download](/postman/nopan-api-collection.zip)'
+servers:
+- url: https://api.nopan.io
+tags:
+- name: Authentication APIs
+  description: This section covers the endpoints required for securely obtaining OAuth 2.0 access tokens to interact with the Nopan API. These APIs support machine-to-machine (M2M) authentication using mutual TLS (mTLS) and client credentials. A valid access token is required to authorize all subsequent requests to protected resources.
+paths:
+  /auth/token:
+    post:
+      tags:
+      - Authentication APIs
+      operationId: getAccessToken
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - grant_type
+              - client_id
+              properties:
+                grant_type:
+                  type: string
+                  enum:
+                  - client_credentials
+                  description: 'OAuth2 grant type. Must be set to <code>client_credentials</code> to indicate machine-to-machine authentication using client credentials.<br/><small>Example: <i>client_credentials</i></small>'
+                client_id:
+                  type: string
+                  description: 'The organization account ID provided at onboarding.<br/><small>Example: <i>merchant-abc123</i></small>'
+                scope:
+                  type: string
+                  description: 'Optional space-delimited list of scopes the client is requesting access to. Used to limit the access token''s permissions. Default is <code>payments:read</code><br/><small>Example: <i>payments:read payments:process</i></small>'
+              additionalProperties: false
+            examples:
+              GetAccessToken:
+                summary: Get Access Token
+                description: Get access token via OAuth2 by submitting form
+                value: grant_type=client_credentials&client_id=your-organization-id&scope=payments:process
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - access_token
+                - token_type
+                - expires_in
+                properties:
+                  access_token:
+                    type: string
+                    description: 'Short-lived Bearer token used to authorize subsequent API requests. Encoded as a JWT (JSON Web Token).<br/><small>Example: <i>eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9...</i></small>'
+                  token_type:
+                    type: string
+                    description: 'Indicates the type of token issued. Always `Bearer` for Nopan APIs.<br/><small>Example: <i>Bearer</i></small>'
+                  expires_in:
+                    type: integer
+                    description: 'Lifetime of the access token in seconds. After this period, the token expires and must be re-requested.<br/><small>Example: <i>7200</i></small>'
+                  refresh_expires_in:
+                    type: integer
+                    description: Lifetime of the associated refresh token in seconds. If refresh tokens are not issued, this is 0.
+                  not-before-policy:
+                    type: integer
+                    description: The time before which the token must not be accepted. Mostly internal and set to 0 unless otherwise specified.
+                  scope:
+                    type: string
+                    description: 'A space-separated list of scopes that the access token grants access to. Reflects the permissions approved.<br/><small>Example: <i>payments:read</i></small>'
+                additionalProperties: false
+              examples:
+                Access Token:
+                  summary: Short lived access token
+                  description: Access token itself, how long it is valid for in seconds and other information
+                  value:
+                    access_token: header.payload.signature
+                    expires_in: 7200
+                    refresh_expires_in: 0
+                    token_type: Bearer
+                    not-before-policy: 0
+                    scope: payments:read
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema: &id001
+                type: object
+                properties:
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  statusInfo:
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                additionalProperties: false
+              examples:
+                ValidationFailure:
+                  summary: Validation failure
+                  description: The payload was incomplete or didn’t pass schema validation. Check required fields and formats.
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4980'
+                      message: Certificate error
+                    callId: dccdf12110264f4c-a19b2c
+        '403':
+          description: Forbidden error
+          content:
+            application/json:
+              schema: *id001
+              examples:
+                ForbiddenError:
+                  summary: Forbidden error
+                  description: Authorization has failed
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4971'
+                      message: 'Authorization error: Resource is not allowed'
+                    callId: 0dbad1cf74de4f76-31bc1e
+      summary: Get access token
+      description: Get an access token via OAuth2

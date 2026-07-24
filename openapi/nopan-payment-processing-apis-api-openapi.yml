@@ -1,0 +1,3303 @@
+openapi: 3.0.3
+info:
+  version: v1
+  title: Nopan Authentication APIs Payment Processing APIs API
+  description: 'Download Nopan Postman collection: [Download](/postman/nopan-api-collection.zip)'
+servers:
+- url: https://api.nopan.io
+tags:
+- name: Payment Processing APIs
+  description: This section provides a set of operations for initiating and managing payments through the Nopan API. These endpoints enable clients to request payments, handle SCA, and track the status of transactions in real time. Designed for seamless integration, the APIs support secure and compliant payment workflows for a variety of use cases including e-commerce, invoicing, and in-app purchases.
+paths:
+  /payments/initiate:
+    post:
+      tags:
+      - Payment Processing APIs
+      operationId: initiatePayment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                processingAccountId:
+                  type: string
+                  minLength: 1
+                  description: 'Unique identifier of the processing account under which the payment is processed.<br/><small>Example: <i>pa-1234</i></small>'
+                clientTransactionId:
+                  type: string
+                  minLength: 1
+                  description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                returnUrl:
+                  type: string
+                  minLength: 1
+                  description: 'The client''s redirect destination after SCA completion<br/><small>Example: <i>https://api.merchant.com/callback?ref=order1234</i></small>'
+                transactionType:
+                  type: string
+                  enum:
+                  - ONE_TIME
+                  - RECURRING
+                  - TOKENIZED
+                  description: Requesting transaction type<br/><small>• <b> ONE_TIME</b> One time payment without storing payment information (COF)</small><br/><small>• <b> RECURRING</b> For recurring payments. Requires mandate details.</small><br/><small>• <b> TOKENIZED</b> Securely stores payment information (COF). Auto capture is not allowed.</small>
+                paymentDetails:
+                  type: object
+                  properties:
+                    amount:
+                      type: integer
+                      format: int64
+                      minimum: 1
+                      description: 'Total payment amount in minor units<br/><small>Example: <i>200</i></small>'
+                    currency:
+                      type: string
+                      minLength: 1
+                      description: 'Currency code (ISO 4217)<br/><small>Example: <i>EUR</i></small>'
+                    country:
+                      type: string
+                      minLength: 1
+                      description: 'Country code (ISO 3166-1)<br/><small>Example: <i>DE</i></small>'
+                    description:
+                      type: string
+                      minLength: 1
+                      description: 'Transaction summary<br/><small>Example: <i>Purchase request of order 1234</i></small>'
+                    autoCapture:
+                      type: boolean
+                      description: 'If set to false the payment will require a manual capture after finalization<br/><small>Example: <i>false</i></small>'
+                  required:
+                  - country
+                  - currency
+                  - description
+                  description: Monetary details of the transaction
+                providerDetails:
+                  type: object
+                  properties:
+                    providerId:
+                      type: string
+                      enum:
+                      - IRIS
+                      - SATISPAY
+                      - WERO
+                      - BIZUM
+                      - BLIK
+                      description: The payment scheme provider ID<br/><small>• <b> IRIS</b> Greek instant account-to-account payment system</small><br/><small>• <b> SATISPAY</b> Independent Italian mobile money app for everyday payments</small><br/><small>• <b> WERO</b> New EU digital wallet and instant payment scheme</small><br/><small>• <b> BIZUM</b> Spanish real-time mobile payment solution linked to bank accounts</small><br/><small>• <b> BLIK</b> Polish mobile payments system used for online and in-store transfers</small>
+                  required:
+                  - providerId
+                  description: Payment scheme provider details
+                payerDetails:
+                  type: object
+                  properties:
+                    payerId:
+                      type: string
+                      minLength: 1
+                      description: 'The payer''s ID provided by the client<br/><small>Example: <i>shopper-1234</i></small>'
+                    oneTimeCode:
+                      type: string
+                      description: 'One time code before SCA<br/><small>Example: <i>123456</i></small>'
+                    phone:
+                      type: object
+                      properties:
+                        countryCode:
+                          type: string
+                          minLength: 1
+                          pattern: ^\+\d{1,4}$
+                          description: 'The payer''s phone country code<br/><small>Example: <i>+34</i></small>'
+                        number:
+                          type: string
+                          minLength: 1
+                          pattern: ^\d{6,10}$
+                          description: 'The payer''s phone number<br/><small>Example: <i>644786335</i></small>'
+                      required:
+                      - countryCode
+                      - number
+                      description: The payer's phone
+                    bankId:
+                      type: string
+                      description: 'The payer''s BIC<br/><small>Example: <i>ETHNGRAA</i></small>'
+                  required:
+                  - payerId
+                  description: Payer identity information
+                requestContext:
+                  type: object
+                  properties:
+                    ipAddress:
+                      type: string
+                      description: 'Requester’s IP address on IPv4/6 format<br/><small>Example: <i>203.0.113.45</i></small>'
+                    userAgent:
+                      type: string
+                      description: 'Device/browser identifier<br/><small>Example: <i>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Safari/605.1.15</i></small>'
+                    channel:
+                      type: string
+                      enum:
+                      - WEB
+                      - APP
+                      - SYSTEM
+                      description: Request access channel<br/><small>• <b> WEB</b> Payment initiated through an online browser channel</small><br/><small>• <b> APP</b> Payment initiated via a mobile or desktop application</small><br/><small>• <b> SYSTEM</b>  Payment triggered automatically by a backend or integrated system</small>
+                    deviceId:
+                      type: string
+                      description: 'App/device identifier<br/><small>Example: <i>device_xyz123</i></small>'
+                    locale:
+                      type: string
+                      description: 'Locale on ISO 639 format<br/><small>Example: <i>es-ES</i></small>'
+                  description: Information about where the transaction was requested
+                metadata:
+                  type: object
+                  additionalProperties:
+                    type: string
+                  description: "Free map of tags set by the client<br/><small>Example</small><pre><code>{\n  \"key\": \"value\",\n  \"experiment\": \"checkout_A\",\n  \"promo_code\": \"SPRING2025\"\n}</code></pre>"
+              required:
+              - clientTransactionId
+              - payerDetails
+              - paymentDetails
+              - processingAccountId
+              - providerDetails
+              - returnUrl
+              - transactionType
+              additionalProperties: false
+            examples:
+              Blik:
+                summary: Blik
+                description: Initiates a Blik payment request
+                value:
+                  processingAccountId: merchant-1234
+                  clientTransactionId: client-txn-54c8c9bc
+                  returnUrl: https://api.merchant.callback?ref=order-1234
+                  transactionType: ONE_TIME
+                  paymentDetails:
+                    amount: 100
+                    currency: PLN
+                    country: PL
+                    description: Product ID 1234 purchase
+                  providerDetails:
+                    providerId: BLIK
+                  payerDetails:
+                    payerId: payerUUID
+                    oneTimeCode: '123456'
+                  requestContext:
+                    ipAddress: 203.0.113.45
+                    userAgent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+                    channel: WEB
+                    deviceId: device-12345
+                    locale: pl-PL
+                  metadata:
+                    orderId: '12345'
+                    customerId: cust-789
+                    productCategory: electronics
+              Iris:
+                summary: Iris
+                description: Initiates a Iris payment request
+                value:
+                  processingAccountId: merchant-1234
+                  clientTransactionId: merchant-12345678
+                  returnUrl: https://api.merchant.callback?ref=order123
+                  transactionType: ONE_TIME
+                  paymentDetails:
+                    amount: 100
+                    currency: EUR
+                    country: GR
+                    description: Play Station 5 game
+                  providerDetails:
+                    providerId: IRIS
+                  payerDetails:
+                    payerId: payerUUID
+                  requestContext:
+                    ipAddress: 203.0.113.45
+                    userAgent: Mozilla/5.0
+                    channel: WEB
+                    deviceId: device-1234
+                    locale: el-GR
+                  metadata:
+                    orderId: '12345'
+                    customerId: cust-789
+                    productCategory: electronics
+              Bizum:
+                summary: Bizum
+                description: Initiates a Bizum payment request
+                value:
+                  processingAccountId: merchant-1234
+                  clientTransactionId: client-txn-54c8c9bc
+                  returnUrl: https://api.merchant.callback?ref=order-1234
+                  transactionType: ONE_TIME
+                  paymentDetails:
+                    amount: 50
+                    currency: EUR
+                    country: ES
+                    description: Product ID 1234 purchase
+                  providerDetails:
+                    providerId: BIZUM
+                  payerDetails:
+                    payerId: payerUUID
+                    phone:
+                      number: '633782248'
+                      countryCode: '+34'
+                  requestContext:
+                    ipAddress: 203.0.113.45
+                    userAgent: Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15
+                    channel: WEB
+                    deviceId: device-67890
+                    locale: es-ES
+                  metadata:
+                    orderId: '12345'
+                    customerId: cust-789
+                    campaign: summer2025
+              Wero:
+                summary: Wero
+                description: Initiates a Wero payment request
+                value:
+                  processingAccountId: merchant-1234
+                  clientTransactionId: client-txn-54c8c9bc
+                  returnUrl: https://api.merchant.callback?ref=order-1234
+                  transactionType: ONE_TIME
+                  paymentDetails:
+                    amount: 75
+                    currency: EUR
+                    country: DE
+                    description: Product ID 1234 purchase
+                  providerDetails:
+                    providerId: WERO
+                  payerDetails:
+                    payerId: payerUUID
+                  requestContext:
+                    ipAddress: 203.0.113.45
+                    userAgent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
+                    channel: WEB
+                    deviceId: device-11223
+                    locale: de-DE
+                  metadata:
+                    orderId: '12345'
+                    customerId: cust-789
+                    checkoutVersion: v2.1
+              SatispayRecurring:
+                summary: Satispay recurring
+                description: Initiates a Satispay recurring payment
+                value:
+                  processingAccountId: merchant-1234
+                  clientTransactionId: client-txn-54c8c9bc
+                  returnUrl: https://api.merchant.callback?ref=order-1234
+                  transactionType: RECURRING
+                  paymentDetails:
+                    amount: 200
+                    currency: EUR
+                    country: IT
+                    description: Product ID 1234 purchase
+                  providerDetails:
+                    providerId: SATISPAY
+                  payerDetails:
+                    payerId: payerUUID
+                  requestContext:
+                    ipAddress: 203.0.113.45
+                    userAgent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36
+                    channel: WEB
+                    deviceId: device-99001
+                    locale: it-IT
+                  metadata:
+                    subscriptionId: sub-456
+                    customerId: cust-789
+                    billingCycle: monthly
+              SatispayOneTime:
+                summary: Satispay one time
+                description: Initiates a Satispay one time payment
+                value:
+                  processingAccountId: merchant-1234
+                  clientTransactionId: client-txn-54c8c9bc
+                  returnUrl: https://api.merchant.callback?ref=order-1234
+                  transactionType: ONE_TIME
+                  paymentDetails:
+                    amount: 200
+                    currency: EUR
+                    country: IT
+                    description: Product ID 1234 purchase
+                  providerDetails:
+                    providerId: SATISPAY
+                  payerDetails:
+                    payerId: payerUUID
+                    phone:
+                      countryCode: '+39'
+                      number: '3121111111'
+                  requestContext:
+                    ipAddress: 203.0.113.45
+                    userAgent: Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36
+                    channel: APP
+                    deviceId: device-44556
+                    locale: it-IT
+                  metadata:
+                    orderId: '12345'
+                    customerId: cust-789
+                    storeName: Milano Store
+              SatispayOneTimeRedirect:
+                summary: Satispay redirect
+                description: Initiates a Satispay payment with redirect
+                value:
+                  processingAccountId: merchant-1234
+                  clientTransactionId: client-txn-54c8c9bc
+                  returnUrl: https://api.merchant.callback?ref=order-1234
+                  transactionType: ONE_TIME
+                  paymentDetails:
+                    amount: 200
+                    currency: EUR
+                    country: IT
+                    description: Product ID 1234 purchase
+                  providerDetails:
+                    providerId: SATISPAY
+                  payerDetails:
+                    payerId: payerUUID
+                  requestContext:
+                    ipAddress: 203.0.113.45
+                    userAgent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+                    channel: WEB
+                    deviceId: device-77889
+                    locale: it-IT
+                  metadata:
+                    orderId: '12345'
+                    customerId: cust-789
+                    redirectFlow: 'true'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  processingAccountId:
+                    type: string
+                    description: 'Unique identifier of the processing account under which the payment is processed.<br/><small>Example: <i>pa-1234</i></small>'
+                  transactionId:
+                    type: string
+                    description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+                  clientTransactionId:
+                    type: string
+                    description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                  providerDetails:
+                    type: object
+                    properties:
+                      providerId:
+                        type: string
+                        enum:
+                        - IRIS
+                        - SATISPAY
+                        - WERO
+                        - BIZUM
+                        - BLIK
+                        description: The payment scheme provider ID<br/><small>• <b> IRIS</b> Greek instant account-to-account payment system</small><br/><small>• <b> SATISPAY</b> Independent Italian mobile money app for everyday payments</small><br/><small>• <b> WERO</b> New EU digital wallet and instant payment scheme</small><br/><small>• <b> BIZUM</b> Spanish real-time mobile payment solution linked to bank accounts</small><br/><small>• <b> BLIK</b> Polish mobile payments system used for online and in-store transfers</small>
+                      providerTransactionId:
+                        type: string
+                        description: 'Transaction reference returned by the provider<br/><small>Example: <i>wero-1234</i></small>'
+                      redirectUrl:
+                        type: string
+                        description: 'The URL where the payer should perform SCA<br/><small>Example: <i>https://auth.merchant.com/token=consent_1234</i></small>'
+                      registeredAt:
+                        type: string
+                        format: date-time
+                        description: 'Timestamp when the transaction was registered in the provider<br/><small>Example: <i>1748699594</i></small>'
+                      expiresAt:
+                        type: string
+                        format: date-time
+                        description: 'Timestamp when the redirect URL expires<br/><small>Example: <i>1748622594</i></small>'
+                      qrCode:
+                        type: string
+                        description: 'A free format QR code to be used for SCA<br/><small>Example: <i>IRISCOM5e77cad0-9de5-4dcb-a13e-857569359de0</i></small>'
+                      providerStatusInfo:
+                        type: object
+                        properties:
+                          reasonCode:
+                            type: string
+                            description: 'The provider''s response status code if available<br/><small>Example: <i>FF01</i></small>'
+                          message:
+                            type: string
+                            description: 'The provider''s response status message if available<br/><small>Example: <i>The initiating party return URL is invalid</i></small>'
+                        description: The provider's response status if available
+                    description: Payment scheme provider details
+                  metadata:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: "Free map of tags set by the client<br/><small>Example</small><pre><code>{\n  \"key\": \"value\",\n  \"experiment\": \"checkout_A\",\n  \"promo_code\": \"SPRING2025\"\n}</code></pre>"
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  statusInfo: &id001
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                additionalProperties: false
+              examples:
+                ApprovalPending:
+                  summary: Approval pending
+                  description: The request has been accepted and awaits for SCA
+                  value:
+                    transactionId: p9vhkuj92yav
+                    processingAccountId: merchant-1234
+                    clientTransactionId: client-txn-54c8c9bc
+                    providerDetails:
+                      providerId: WERO
+                      providerTransactionId: 9c82132e-eb2a-491c-970d-47260d4122b0
+                      redirectUrl: https://merchant.callback.com
+                      registeredAt: '2026-01-19T14:32:05.987654Z'
+                      expiresAt: '2026-01-19T14:32:05.987654Z'
+                    metadata:
+                      promo: BLACK_FRIDAY
+                      key: value
+                    status: PENDING
+                    statusInfo:
+                      reasonCode: '-1'
+                      message: Request processed successfully
+                ApprovalPendingIris:
+                  summary: Approval pending - IRIS
+                  description: The request has been accepted and awaits for SCA
+                  value:
+                    transactionId: p9vhkuj92yav
+                    clientTransactionId: merchant-12345678
+                    processingAccountId: merchant-1234
+                    providerDetails:
+                      providerId: IRIS
+                      providerTransactionId: '202604011349090000000000000105468'
+                      registeredAt: '2026-04-01T13:49:09.462Z'
+                      qrCode: https://test-iris.dias.com.gr/iris-ecommerce-demo/webBanking.html?authorizationRequestID=a3e90582-fd52-44b2-9afa-4981e44e6b29
+                    metadata:
+                      orderId: '12345'
+                      customerId: cust-789
+                      productCategory: electronics
+                    status: PENDING
+                    statusInfo:
+                      message: Request processed successfully
+                      reasonCode: '-1'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusInfo: *id001
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  fields:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: A map of fields that have failed validation
+                additionalProperties: false
+              examples:
+                MalformedJson:
+                  summary: Malformed JSON
+                  description: The JSON is not properly formatted
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4000'
+                      message: The payload was incomplete or didn't pass schema validation. Check required fields and formats.
+                    callId: a3c8cdef0a134df4-2e31b1
+                ValidationFailure:
+                  summary: Validation failure
+                  description: The client ID and payment amount are invalid
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4000'
+                      message: Invalid input
+                    fields:
+                      processingAccountId: Processing Account ID is required
+                      paymentDetails.amount: Amount is required
+                    callId: 678c62b0177e4bc3-a12309
+                SignatureError:
+                  summary: Signature error
+                  description: There was an error signing the signature
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4990'
+                      message: Signature error
+                    callId: 0af7a364bc7745f2-b823fc
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: &id002
+                type: object
+                properties:
+                  statusInfo: *id001
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
+              examples:
+                InvalidSignature:
+                  summary: Invalid signature
+                  description: The signature is not valid
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4992'
+                      message: Error validating the signature
+                    callId: a3c8cdef0a134df4-2e31b1
+                TokenExpired:
+                  summary: Token expired
+                  description: Token is expired
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4061'
+                      message: Token is expired
+                    callId: c84b0b9f91714d4e-5d2311
+                UnauthorizedError:
+                  summary: Unauthorized error
+                  description: Unable to authorize user
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4970'
+                      message: Authentication error
+                    callId: be1d37ab317e4b2d-a8f9d4
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema: *id002
+              examples:
+                ForbiddenError:
+                  summary: Forbidden error
+                  description: Authorization has failed
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4971'
+                      message: 'Authorization error: Resource is not allowed'
+                    callId: 0dbad1cf74de4f76-31bc1e
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema: *id002
+              examples:
+                NotFoundError:
+                  summary: Not found
+                  description: Payment not found
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5000'
+                      message: Payment not found
+                    callId: 0dbad1cf74de4f76-31bc1e
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema: *id002
+              examples:
+                ConflictError:
+                  summary: Conflict error
+                  description: Payment transaction is already created
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5001'
+                      message: Payment already exists
+                    callId: 9cf37980efdc4316-01a4bc
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema: *id002
+              examples:
+                UnprocessableError:
+                  summary: Unprocessable
+                  description: Payment transition not allowed
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5002'
+                      message: Payment transition not allowed
+                    callId: 0af7a364bc7745f2-b823fc
+        '423':
+          description: Locked
+          content:
+            application/json:
+              schema: *id002
+              examples:
+                LockedError:
+                  summary: Locked
+                  description: Payment is currently processing
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5003'
+                      message: Payment is processing
+                    callId: 0af7a364bc7745f2-b823fc
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema: *id002
+              examples:
+                RateLimitError:
+                  summary: Rate limit error
+                  description: The rate limit has been exceeded
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '3000'
+                      message: Rate limit exceeded
+                    callId: 4a9137cf2ccf4c19-00982e
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: *id002
+              examples:
+                InternalServerError:
+                  summary: Internal server error
+                  description: An unexpected error has happened
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '9999'
+                      message: Internal Server Error
+                    callId: e147c3ba09cd496f-bd02e7
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema: *id002
+              examples:
+                NotImplementedError:
+                  summary: Not implemented
+                  description: Operation not supported by the provider
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '8003'
+                      message: Operation not supported
+                    callId: 0af7a364bc7745f2-b823fc
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema: *id002
+              examples:
+                BadGatewayError:
+                  summary: Bad gateway error
+                  description: Unable to reach the provider
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '8004'
+                      message: Provider error
+                    callId: 0af7a364bc7745f2-b823fc
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema: *id002
+              examples:
+                GatewayTimeoutError:
+                  summary: Gateway timeout
+                  description: Provider did not respond in time
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '8001'
+                      message: Provider timeout
+                    callId: 0af7a364bc7745f2-b823fc
+      summary: Initiate payment
+      description: Starts a new payment flow. The client provides payment details, and the response includes a redirect URL for the payer's SCA.
+  /payments/finalize:
+    post:
+      tags:
+      - Payment Processing APIs
+      operationId: finalizePayment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                processingAccountId:
+                  type: string
+                  minLength: 1
+                  description: 'Unique identifier of the processing account under which the payment is processed.<br/><small>Example: <i>pa-1234</i></small>'
+                transactionId:
+                  type: string
+                  minLength: 1
+                  description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+              required:
+              - processingAccountId
+              - transactionId
+              additionalProperties: false
+            examples:
+              Finalize:
+                summary: Finalize
+                description: Finalizes a payment
+                value:
+                  processingAccountId: merchant-1234
+                  transactionId: p9vhkuj92yav
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactionId:
+                    type: string
+                    description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+                  processingAccountId:
+                    type: string
+                    description: 'Unique identifier of the processing account under which the payment is processed.<br/><small>Example: <i>pa-1234</i></small>'
+                  clientTransactionId:
+                    type: string
+                    description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                  providerDetails:
+                    type: object
+                    properties:
+                      providerId:
+                        type: string
+                        enum:
+                        - IRIS
+                        - SATISPAY
+                        - WERO
+                        - BIZUM
+                        - BLIK
+                        description: The payment scheme provider ID<br/><small>• <b> IRIS</b> Greek instant account-to-account payment system</small><br/><small>• <b> SATISPAY</b> Independent Italian mobile money app for everyday payments</small><br/><small>• <b> WERO</b> New EU digital wallet and instant payment scheme</small><br/><small>• <b> BIZUM</b> Spanish real-time mobile payment solution linked to bank accounts</small><br/><small>• <b> BLIK</b> Polish mobile payments system used for online and in-store transfers</small>
+                      providerTransactionId:
+                        type: string
+                        description: 'Transaction reference returned by the provider<br/><small>Example: <i>wero-1234</i></small>'
+                      redirectUrl:
+                        type: string
+                        description: 'The URL where the payer should perform SCA<br/><small>Example: <i>https://auth.merchant.com/token=consent_1234</i></small>'
+                      registeredAt:
+                        type: string
+                        format: date-time
+                        description: 'Timestamp when the transaction was registered in the provider<br/><small>Example: <i>1748699594</i></small>'
+                      expiresAt:
+                        type: string
+                        format: date-time
+                        description: 'Timestamp when the redirect URL expires<br/><small>Example: <i>1748622594</i></small>'
+                      qrCode:
+                        type: string
+                        description: 'A free format QR code to be used for SCA<br/><small>Example: <i>IRISCOM5e77cad0-9de5-4dcb-a13e-857569359de0</i></small>'
+                      providerStatusInfo:
+                        type: object
+                        properties:
+                          reasonCode:
+                            type: string
+                            description: 'The provider''s response status code if available<br/><small>Example: <i>FF01</i></small>'
+                          message:
+                            type: string
+                            description: 'The provider''s response status message if available<br/><small>Example: <i>The initiating party return URL is invalid</i></small>'
+                        description: The provider's response status if available
+                    description: Payment scheme provider details
+                  payerDetails:
+                    type: object
+                    properties:
+                      payerId:
+                        type: string
+                        description: 'The payer''s ID provided by the client<br/><small>Example: <i>shopper-1234</i></small>'
+                      phone:
+                        type: object
+                        properties:
+                          countryCode:
+                            type: string
+                            minLength: 1
+                            pattern: ^\+\d{1,4}$
+                            description: 'The payer''s phone country code<br/><small>Example: <i>+34</i></small>'
+                          number:
+                            type: string
+                            minLength: 1
+                            pattern: ^\d{6,10}$
+                            description: 'The payer''s phone number<br/><small>Example: <i>644786335</i></small>'
+                        required:
+                        - countryCode
+                        - number
+                        description: The payer's phone
+                      oneTimeCode:
+                        type: string
+                        description: 'One time code before SCA<br/><small>Example: <i>123456</i></small>'
+                      paymentToken:
+                        type: string
+                        description: 'The payment token of the payer<br/><small>Example: <i>eyJraWQiOiI5MDU5OGE2NC1jZWNlLTQ1YzItOGUzMy02OTAzODA5OTBlYjgiLCJhbGciOiJSUzI1NiJ9...</i></small>'
+                    description: Payer identity information
+                  paymentDetails:
+                    type: object
+                    properties:
+                      amount:
+                        type: integer
+                        format: int64
+                        description: 'Total payment amount in minor units<br/><small>Example: <i>200</i></small>'
+                      currency:
+                        type: string
+                        description: 'Currency code (ISO 4217)<br/><small>Example: <i>EUR</i></small>'
+                      country:
+                        type: string
+                        description: 'Country code (ISO 3166-1)<br/><small>Example: <i>DE</i></small>'
+                      description:
+                        type: string
+                        description: 'Transaction summary<br/><small>Example: <i>Purchase request of order 1234</i></small>'
+                      autoCapture:
+                        type: boolean
+                        description: 'If set to false the payment will require a manual capture after finalization<br/><small>Example: <i>false</i></small>'
+                    description: Monetary details of the transaction
+                  metadata:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: "Free map of tags set by the client<br/><small>Example</small><pre><code>{\n  \"key\": \"value\",\n  \"experiment\": \"checkout_A\",\n  \"promo_code\": \"SPRING2025\"\n}</code></pre>"
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  statusInfo: &id003
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                additionalProperties: false
+              examples:
+                Approved:
+                  summary: Payment approved
+                  description: The payment has been approved and ready for capture
+                  value:
+                    transactionId: p9vhkuj92yav
+                    processingAccountId: merchant-1234
+                    clientTransactionId: client-txn-54c8c9bc
+                    providerDetails:
+                      providerId: WERO
+                      providerTransactionId: 9c82132e-eb2a-491c-970d-47260d4122b0
+                      registeredAt: '2026-01-19T14:32:05.987654Z'
+                    payerDetails:
+                      payerId: payerUUID
+                    paymentDetails:
+                      amount: 75
+                      currency: EUR
+                      country: DE
+                      description: Product ID 1234 purchase
+                      autoCapture: false
+                    metadata:
+                      promo: BLACK_FRIDAY
+                      key: value
+                    status: APPROVED
+                    statusInfo:
+                      reasonCode: '-1'
+                      message: Request processed successfully
+                ApprovedIris:
+                  summary: Payment approved - IRIS
+                  description: The payment has been approved and ready for capture
+                  value:
+                    transactionId: p9vhkuj92yav
+                    clientTransactionId: merchant-12345678
+                    processingAccountId: merchant-1234
+                    providerDetails:
+                      providerId: IRIS
+                      providerTransactionId: '202604011213440000000000000105449'
+                      registeredAt: '2026-04-01T12:13:44.773Z'
+                      qrCode: https://test-iris.dias.com.gr/iris-ecommerce-demo/webBanking.html?authorizationRequestID=f02505f4-04f7-479a-bbd3-69e6bc048419
+                    payerDetails:
+                      payerId: payerUUID
+                      oneTimeCode: '123456'
+                    paymentDetails:
+                      amount: 100
+                      currency: EUR
+                      country: GR
+                      description: Play Station 5 game
+                      autoCapture: true
+                    metadata:
+                      orderId: '12345'
+                      customerId: cust-789
+                      productCategory: electronics
+                    status: APPROVED
+                    statusInfo:
+                      message: Request processed successfully
+                      reasonCode: '-1'
+                ApprovedAndCaptured:
+                  summary: Payment approved and captured
+                  description: The payment has been approved and captured
+                  value:
+                    transactionId: p9vhkuj92yav
+                    processingAccountId: merchant-1234
+                    clientTransactionId: client-txn-54c8c9bc
+                    providerDetails:
+                      providerId: WERO
+                      providerTransactionId: 9c82132e-eb2a-491c-970d-47260d4122b0
+                      registeredAt: '2026-01-19T14:32:05.987654Z'
+                    payerDetails:
+                      payerId: payerUUID
+                    paymentDetails:
+                      amount: 75
+                      currency: EUR
+                      country: DE
+                      description: Product ID 1234 purchase
+                      autoCapture: false
+                    metadata:
+                      promo: BLACK_FRIDAY
+                      key: value
+                    status: APPROVED
+                    statusInfo:
+                      reasonCode: '-1'
+                      message: Request processed successfully
+                Declined:
+                  summary: Payment declined
+                  description: The payment has been declined
+                  value:
+                    transactionId: p9vhkuj92yav
+                    processingAccountId: merchant-1234
+                    clientTransactionId: client-txn-54c8c9bc
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '1000'
+                      message: Non sufficient funds
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusInfo: *id003
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  fields:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: A map of fields that have failed validation
+                additionalProperties: false
+              examples:
+                MalformedJson:
+                  summary: Malformed JSON
+                  description: The JSON is not properly formatted
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4000'
+                      message: The payload was incomplete or didn't pass schema validation. Check required fields and formats.
+                    callId: a3c8cdef0a134df4-2e31b1
+                ValidationFailure:
+                  summary: Validation failure
+                  description: The client ID and provider details are invalid
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: validation-error
+                      message: Validation failed for one or more fields
+                    fields:
+                      processingAccountId: Processing Account ID is required
+                      providerDetails: Provider details are required
+                SignatureError:
+                  summary: Signature error
+                  description: There was an error signing the signature
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4990'
+                      message: Signature error
+                    callId: 0af7a364bc7745f2-b823fc
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: &id004
+                type: object
+                properties:
+                  statusInfo: *id003
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
+              examples:
+                InvalidSignature:
+                  summary: Invalid signature
+                  description: The signature is not valid
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4992'
+                      message: Error validating the signature
+                    callId: a3c8cdef0a134df4-2e31b1
+                TokenExpired:
+                  summary: Token expired
+                  description: Token is expired
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4061'
+                      message: Token is expired
+                    callId: c84b0b9f91714d4e-5d2311
+                UnauthorizedError:
+                  summary: Unauthorized error
+                  description: Unable to authorize user
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4970'
+                      message: Authentication error
+                    callId: be1d37ab317e4b2d-a8f9d4
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema: *id004
+              examples:
+                ForbiddenError:
+                  summary: Forbidden error
+                  description: Authorization has failed
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4971'
+                      message: 'Authorization error: Resource is not allowed'
+                    callId: 0dbad1cf74de4f76-31bc1e
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema: *id004
+              examples:
+                NotFoundError:
+                  summary: Not found
+                  description: Payment not found
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5000'
+                      message: Payment not found
+                    callId: 0dbad1cf74de4f76-31bc1e
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema: *id004
+              examples:
+                ConflictError:
+                  summary: Conflict error
+                  description: Payment transaction is already created
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5001'
+                      message: Payment already exists
+                    callId: 9cf37980efdc4316-01a4bc
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema: *id004
+              examples:
+                UnprocessableError:
+                  summary: Unprocessable
+                  description: Payment transition not allowed
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5002'
+                      message: Payment transition not allowed
+                    callId: 0af7a364bc7745f2-b823fc
+        '423':
+          description: Locked
+          content:
+            application/json:
+              schema: *id004
+              examples:
+                LockedError:
+                  summary: Locked
+                  description: Payment is currently processing
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5003'
+                      message: Payment is processing
+                    callId: 0af7a364bc7745f2-b823fc
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema: *id004
+              examples:
+                RateLimitError:
+                  summary: Rate limit error
+                  description: The rate limit has been exceeded
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '3000'
+                      message: Rate limit exceeded
+                    callId: 4a9137cf2ccf4c19-00982e
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: *id004
+              examples:
+                InternalServerError:
+                  summary: Internal server error
+                  description: An unexpected error has happened
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '9999'
+                      message: Internal Server Error
+                    callId: e147c3ba09cd496f-bd02e7
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema: *id004
+              examples:
+                NotImplementedError:
+                  summary: Not implemented
+                  description: Operation not supported by the provider
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '8003'
+                      message: Operation not supported
+                    callId: 0af7a364bc7745f2-b823fc
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema: *id004
+              examples:
+                BadGatewayError:
+                  summary: Bad gateway error
+                  description: Unable to reach the provider
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '8004'
+                      message: Provider error
+                    callId: 0af7a364bc7745f2-b823fc
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema: *id004
+              examples:
+                GatewayTimeoutError:
+                  summary: Gateway timeout
+                  description: Provider did not respond in time
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '8001'
+                      message: Provider timeout
+                    callId: 0af7a364bc7745f2-b823fc
+      summary: Finalize payment
+      description: Finalizes a two-step payment, optionally capturing funds if configured. For one-step payments, it serves as the merchant's acknowledgement.
+  /payments/charge:
+    post:
+      tags:
+      - Payment Processing APIs
+      operationId: chargePayment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                processingAccountId:
+                  type: string
+                  minLength: 1
+                  description: 'Unique identifier of the processing account under which the payment is processed.<br/><small>Example: <i>pa-1234</i></small>'
+                clientTransactionId:
+                  type: string
+                  minLength: 1
+                  description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                paymentDetails:
+                  type: object
+                  properties:
+                    amount:
+                      type: integer
+                      format: int64
+                      minimum: 1
+                      description: 'Total payment amount in minor units<br/><small>Example: <i>200</i></small>'
+                    currency:
+                      type: string
+                      minLength: 1
+                      description: 'Currency code (ISO 4217)<br/><small>Example: <i>EUR</i></small>'
+                    country:
+                      type: string
+                      minLength: 1
+                      description: 'Country code (ISO 3166-1)<br/><small>Example: <i>DE</i></small>'
+                    description:
+                      type: string
+                      minLength: 1
+                      description: 'Transaction summary<br/><small>Example: <i>Purchase request of order 1234</i></small>'
+                    autoCapture:
+                      type: boolean
+                      description: 'If set to false the payment will require a manual capture after finalization<br/><small>Example: <i>false</i></small>'
+                  required:
+                  - country
+                  - currency
+                  - description
+                  description: Monetary details of the transaction
+                providerDetails:
+                  type: object
+                  properties:
+                    providerId:
+                      type: string
+                      enum:
+                      - IRIS
+                      - SATISPAY
+                      - WERO
+                      - BIZUM
+                      - BLIK
+                      description: The payment scheme provider ID<br/><small>• <b> IRIS</b> Greek instant account-to-account payment system</small><br/><small>• <b> SATISPAY</b> Independent Italian mobile money app for everyday payments</small><br/><small>• <b> WERO</b> New EU digital wallet and instant payment scheme</small><br/><small>• <b> BIZUM</b> Spanish real-time mobile payment solution linked to bank accounts</small><br/><small>• <b> BLIK</b> Polish mobile payments system used for online and in-store transfers</small>
+                  required:
+                  - providerId
+                  description: Payment scheme provider details
+                payerDetails:
+                  type: object
+                  properties:
+                    payerId:
+                      type: string
+                      minLength: 1
+                      description: 'The payer''s ID provided by the client<br/><small>Example: <i>shopper-1234</i></small>'
+                    paymentToken:
+                      type: string
+                      description: 'The payment token of the payer<br/><small>Example: <i>eyJraWQiOiI5MDU5OGE2NC1jZWNlLTQ1YzItOGUzMy02OTAzODA5OTBlYjgiLCJhbGciOiJSUzI1NiJ9...</i></small>'
+                  required:
+                  - payerId
+                  description: Payer identity information
+                requestContext:
+                  type: object
+                  properties:
+                    ipAddress:
+                      type: string
+                      description: 'Requester’s IP address on IPv4/6 format<br/><small>Example: <i>203.0.113.45</i></small>'
+                    userAgent:
+                      type: string
+                      description: 'Device/browser identifier<br/><small>Example: <i>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Safari/605.1.15</i></small>'
+                    channel:
+                      type: string
+                      enum:
+                      - WEB
+                      - APP
+                      - SYSTEM
+                      description: Request access channel<br/><small>• <b> WEB</b> Payment initiated through an online browser channel</small><br/><small>• <b> APP</b> Payment initiated via a mobile or desktop application</small><br/><small>• <b> SYSTEM</b>  Payment triggered automatically by a backend or integrated system</small>
+                    deviceId:
+                      type: string
+                      description: 'App/device identifier<br/><small>Example: <i>device_xyz123</i></small>'
+                    locale:
+                      type: string
+                      description: 'Locale on ISO 639 format<br/><small>Example: <i>es-ES</i></small>'
+                  description: Information about where the transaction was requested
+                metadata:
+                  type: object
+                  additionalProperties:
+                    type: string
+                  description: "Free map of tags set by the client<br/><small>Example</small><pre><code>{\n  \"key\": \"value\",\n  \"experiment\": \"checkout_A\",\n  \"promo_code\": \"SPRING2025\"\n}</code></pre>"
+              required:
+              - clientTransactionId
+              - payerDetails
+              - paymentDetails
+              - processingAccountId
+              - providerDetails
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactionId:
+                    type: string
+                    description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+                  processingAccountId:
+                    type: string
+                    description: 'Unique identifier of the processing account under which the payment is processed.<br/><small>Example: <i>pa-1234</i></small>'
+                  clientTransactionId:
+                    type: string
+                    description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                  providerDetails:
+                    type: object
+                    properties:
+                      providerId:
+                        type: string
+                        enum:
+                        - IRIS
+                        - SATISPAY
+                        - WERO
+                        - BIZUM
+                        - BLIK
+                        description: The payment scheme provider ID<br/><small>• <b> IRIS</b> Greek instant account-to-account payment system</small><br/><small>• <b> SATISPAY</b> Independent Italian mobile money app for everyday payments</small><br/><small>• <b> WERO</b> New EU digital wallet and instant payment scheme</small><br/><small>• <b> BIZUM</b> Spanish real-time mobile payment solution linked to bank accounts</small><br/><small>• <b> BLIK</b> Polish mobile payments system used for online and in-store transfers</small>
+                      providerTransactionId:
+                        type: string
+                        description: 'Transaction reference returned by the provider<br/><small>Example: <i>wero-1234</i></small>'
+                      registeredAt:
+                        type: string
+                        format: date-time
+                        description: 'Timestamp when the transaction was registered in the provider<br/><small>Example: <i>1748699594</i></small>'
+                      providerStatusInfo:
+                        type: object
+                        properties:
+                          reasonCode:
+                            type: string
+                            description: 'The provider''s response status code if available<br/><small>Example: <i>FF01</i></small>'
+                          message:
+                            type: string
+                            description: 'The provider''s response status message if available<br/><small>Example: <i>The initiating party return URL is invalid</i></small>'
+                        description: The provider's response status if available
+                    description: Payment scheme provider details
+                  metadata:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: "Free map of tags set by the client<br/><small>Example</small><pre><code>{\n  \"key\": \"value\",\n  \"experiment\": \"checkout_A\",\n  \"promo_code\": \"SPRING2025\"\n}</code></pre>"
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  statusInfo: &id005
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusInfo: *id005
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  fields:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: A map of fields that have failed validation
+                additionalProperties: false
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: &id006
+                type: object
+                properties:
+                  statusInfo: *id005
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema: *id006
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema: *id006
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema: *id006
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema: *id006
+        '423':
+          description: Locked
+          content:
+            application/json:
+              schema: *id006
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema: *id006
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: *id006
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema: *id006
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema: *id006
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema: *id006
+      summary: Charge payment
+      description: Triggers a recurring or token-based payment without user interaction in one step.
+  /payments/capture:
+    post:
+      tags:
+      - Payment Processing APIs
+      operationId: capturePayment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                processingAccountId:
+                  type: string
+                  minLength: 1
+                  description: 'Unique identifier of the processing account under which the payment is processed.<br/><small>Example: <i>pa-1234</i></small>'
+                clientTransactionId:
+                  type: string
+                  minLength: 1
+                  description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                transactionId:
+                  type: string
+                  minLength: 1
+                  description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+                paymentDetails:
+                  type: object
+                  properties:
+                    amount:
+                      type: integer
+                      format: int64
+                      minimum: 1
+                      description: 'Total payment amount in minor units<br/><small>Example: <i>200</i></small>'
+                  description: Monetary details of the transaction
+              required:
+              - clientTransactionId
+              - paymentDetails
+              - processingAccountId
+              - transactionId
+              additionalProperties: false
+            examples:
+              Capture:
+                summary: Capture
+                description: Captures partial or full amount
+                value:
+                  processingAccountId: merchant-1234
+                  clientTransactionId: client-txn-54c8c9bc
+                  transactionId: p9vhkuj92yav
+                  paymentDetails:
+                    amount: 75
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  originalTransactionId:
+                    type: string
+                    description: 'Nopan''s transaction ID that originated the payment<br/><small>Example: <i>94rbvsyghh0x</i></small>'
+                  transactionId:
+                    type: string
+                    description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+                  processingAccountId:
+                    type: string
+                    description: 'Unique identifier of the processing account under which the payment is processed.<br/><small>Example: <i>pa-1234</i></small>'
+                  clientTransactionId:
+                    type: string
+                    description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                  providerDetails:
+                    type: object
+                    properties:
+                      providerId:
+                        type: string
+                        enum:
+                        - IRIS
+                        - SATISPAY
+                        - WERO
+                        - BIZUM
+                        - BLIK
+                        description: The payment scheme provider ID<br/><small>• <b> IRIS</b> Greek instant account-to-account payment system</small><br/><small>• <b> SATISPAY</b> Independent Italian mobile money app for everyday payments</small><br/><small>• <b> WERO</b> New EU digital wallet and instant payment scheme</small><br/><small>• <b> BIZUM</b> Spanish real-time mobile payment solution linked to bank accounts</small><br/><small>• <b> BLIK</b> Polish mobile payments system used for online and in-store transfers</small>
+                      providerTransactionId:
+                        type: string
+                        description: 'Transaction reference returned by the provider<br/><small>Example: <i>wero-1234</i></small>'
+                      registeredAt:
+                        type: string
+                        format: date-time
+                        description: 'Timestamp when the transaction was registered in the provider<br/><small>Example: <i>1748699594</i></small>'
+                      providerStatusInfo:
+                        type: object
+                        properties:
+                          reasonCode:
+                            type: string
+                            description: 'The provider''s response status code if available<br/><small>Example: <i>FF01</i></small>'
+                          message:
+                            type: string
+                            description: 'The provider''s response status message if available<br/><small>Example: <i>The initiating party return URL is invalid</i></small>'
+                        description: The provider's response status if available
+                    description: Payment scheme provider details
+                  paymentDetails:
+                    type: object
+                    properties:
+                      amount:
+                        type: integer
+                        format: int64
+                        description: 'Total payment amount in minor units<br/><small>Example: <i>200</i></small>'
+                    description: Monetary details of the transaction
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  statusInfo: &id007
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                additionalProperties: false
+              examples:
+                Captured:
+                  summary: Amount captured
+                  description: The amount has been captured
+                  value:
+                    transactionId: p9vhkuj92yav
+                    originalTransactionId: ab1cdef2gh
+                    processingAccountId: merchant-1234
+                    clientTransactionId: client-txn-54c8c9bc
+                    providerDetails:
+                      providerId: SATISPAY
+                      providerTransactionId: 019bb12e-843a-784f-bd66-b69dcfc02e8d
+                      registeredAt: '2026-01-19T14:32:05.987654Z'
+                    paymentDetails:
+                      amount: 75
+                    status: APPROVED
+                    statusInfo:
+                      reasonCode: '-1'
+                      message: Request processed successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusInfo: *id007
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  fields:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: A map of fields that have failed validation
+                additionalProperties: false
+              examples:
+                MalformedJson:
+                  summary: Malformed JSON
+                  description: The JSON is not properly formatted
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4000'
+                      message: The payload was incomplete or didn't pass schema validation. Check required fields and formats.
+                    callId: a3c8cdef0a134df4-2e31b1
+                SignatureError:
+                  summary: Signature error
+                  description: There was an error signing the signature
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4990'
+                      message: Signature error
+                    callId: 0af7a364bc7745f2-b823fc
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: &id008
+                type: object
+                properties:
+                  statusInfo: *id007
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
+              examples:
+                InvalidSignature:
+                  summary: Invalid signature
+                  description: The signature is not valid
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4992'
+                      message: Error validating the signature
+                    callId: a3c8cdef0a134df4-2e31b1
+                TokenExpired:
+                  summary: Token expired
+                  description: Token is expired
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4061'
+                      message: Token is expired
+                    callId: c84b0b9f91714d4e-5d2311
+                UnauthorizedError:
+                  summary: Unauthorized error
+                  description: Unable to authorize user
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4970'
+                      message: Authentication error
+                    callId: be1d37ab317e4b2d-a8f9d4
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema: *id008
+              examples:
+                ForbiddenError:
+                  summary: Forbidden error
+                  description: Authorization has failed
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4971'
+                      message: 'Authorization error: Resource is not allowed'
+                    callId: 0dbad1cf74de4f76-31bc1e
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema: *id008
+              examples:
+                NotFoundError:
+                  summary: Not found
+                  description: Payment not found
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5000'
+                      message: Payment not found
+                    callId: 0dbad1cf74de4f76-31bc1e
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema: *id008
+              examples:
+                ConflictError:
+                  summary: Conflict error
+                  description: Payment transaction is already created
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5001'
+                      message: Payment already exists
+                    callId: 9cf37980efdc4316-01a4bc
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema: *id008
+              examples:
+                UnprocessableError:
+                  summary: Unprocessable
+                  description: Payment transition not allowed
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5002'
+                      message: Payment transition not allowed
+                    callId: 0af7a364bc7745f2-b823fc
+        '423':
+          description: Locked
+          content:
+            application/json:
+              schema: *id008
+              examples:
+                LockedError:
+                  summary: Locked
+                  description: Payment is currently processing
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5003'
+                      message: Payment is processing
+                    callId: 0af7a364bc7745f2-b823fc
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema: *id008
+              examples:
+                RateLimitError:
+                  summary: Rate limit error
+                  description: The rate limit has been exceeded
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '3000'
+                      message: Rate limit exceeded
+                    callId: 4a9137cf2ccf4c19-00982e
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: *id008
+              examples:
+                InternalServerError:
+                  summary: Internal server error
+                  description: An unexpected error has happened
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '9999'
+                      message: Internal Server Error
+                    callId: e147c3ba09cd496f-bd02e7
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema: *id008
+              examples:
+                NotImplementedError:
+                  summary: Not implemented
+                  description: Operation not supported by the provider
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '8003'
+                      message: Operation not supported
+                    callId: 0af7a364bc7745f2-b823fc
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema: *id008
+              examples:
+                BadGatewayError:
+                  summary: Bad gateway error
+                  description: Unable to reach the provider
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '8004'
+                      message: Provider error
+                    callId: 0af7a364bc7745f2-b823fc
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema: *id008
+              examples:
+                GatewayTimeoutError:
+                  summary: Gateway timeout
+                  description: Provider did not respond in time
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '8001'
+                      message: Provider timeout
+                    callId: 0af7a364bc7745f2-b823fc
+      summary: Capture payment
+      description: Captures funds from a previously finalized payment without auto capture. Enables delayed capture scenarios for clients who prefer control over timing
+  /payments/cancel:
+    post:
+      tags:
+      - Payment Processing APIs
+      operationId: cancelPayment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                processingAccountId:
+                  type: string
+                  minLength: 1
+                  description: 'Unique identifier of the processing account under which the payment is processed.<br/><small>Example: <i>pa-1234</i></small>'
+                clientTransactionId:
+                  type: string
+                  minLength: 1
+                  description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                transactionId:
+                  type: string
+                  minLength: 1
+                  description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+              required:
+              - clientTransactionId
+              - processingAccountId
+              - transactionId
+              additionalProperties: false
+            examples:
+              Cancel:
+                summary: Cancel
+                description: Cancels a payment
+                value:
+                  processingAccountId: merchant-1234
+                  clientTransactionId: client-txn-54c8c9bc
+                  transactionId: p9vhkuj92yav
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactionId:
+                    type: string
+                    description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+                  processingAccountId:
+                    type: string
+                    description: 'Unique identifier of the processing account under which the payment is processed.<br/><small>Example: <i>pa-1234</i></small>'
+                  clientTransactionId:
+                    type: string
+                    description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                  providerDetails:
+                    type: object
+                    properties:
+                      providerId:
+                        type: string
+                        enum:
+                        - IRIS
+                        - SATISPAY
+                        - WERO
+                        - BIZUM
+                        - BLIK
+                        description: The payment scheme provider ID<br/><small>• <b> IRIS</b> Greek instant account-to-account payment system</small><br/><small>• <b> SATISPAY</b> Independent Italian mobile money app for everyday payments</small><br/><small>• <b> WERO</b> New EU digital wallet and instant payment scheme</small><br/><small>• <b> BIZUM</b> Spanish real-time mobile payment solution linked to bank accounts</small><br/><small>• <b> BLIK</b> Polish mobile payments system used for online and in-store transfers</small>
+                      providerTransactionId:
+                        type: string
+                        description: 'Transaction reference returned by the provider<br/><small>Example: <i>wero-1234</i></small>'
+                      redirectUrl:
+                        type: string
+                        description: 'The URL where the payer should perform SCA<br/><small>Example: <i>https://auth.merchant.com/token=consent_1234</i></small>'
+                      registeredAt:
+                        type: string
+                        format: date-time
+                        description: 'Timestamp when the transaction was registered in the provider<br/><small>Example: <i>1748699594</i></small>'
+                      expiresAt:
+                        type: string
+                        format: date-time
+                        description: 'Timestamp when the redirect URL expires<br/><small>Example: <i>1748622594</i></small>'
+                      qrCode:
+                        type: string
+                        description: 'A free format QR code to be used for SCA<br/><small>Example: <i>IRISCOM5e77cad0-9de5-4dcb-a13e-857569359de0</i></small>'
+                      providerStatusInfo:
+                        type: object
+                        properties:
+                          reasonCode:
+                            type: string
+                            description: 'The provider''s response status code if available<br/><small>Example: <i>FF01</i></small>'
+                          message:
+                            type: string
+                            description: 'The provider''s response status message if available<br/><small>Example: <i>The initiating party return URL is invalid</i></small>'
+                        description: The provider's response status if available
+                    description: Payment scheme provider details
+                  payerDetails:
+                    type: object
+                    properties:
+                      payerId:
+                        type: string
+                        description: 'The payer''s ID provided by the client<br/><small>Example: <i>shopper-1234</i></small>'
+                      phone:
+                        type: object
+                        properties:
+                          countryCode:
+                            type: string
+                            minLength: 1
+                            pattern: ^\+\d{1,4}$
+                            description: 'The payer''s phone country code<br/><small>Example: <i>+34</i></small>'
+                          number:
+                            type: string
+                            minLength: 1
+                            pattern: ^\d{6,10}$
+                            description: 'The payer''s phone number<br/><small>Example: <i>644786335</i></small>'
+                        required:
+                        - countryCode
+                        - number
+                        description: The payer's phone
+                      oneTimeCode:
+                        type: string
+                        description: 'One time code before SCA<br/><small>Example: <i>123456</i></small>'
+                      paymentToken:
+                        type: string
+                        description: 'The payment token of the payer<br/><small>Example: <i>eyJraWQiOiI5MDU5OGE2NC1jZWNlLTQ1YzItOGUzMy02OTAzODA5OTBlYjgiLCJhbGciOiJSUzI1NiJ9...</i></small>'
+                    description: Payer identity information
+                  paymentDetails:
+                    type: object
+                    properties:
+                      amount:
+                        type: integer
+                        format: int64
+                        description: 'Total payment amount in minor units<br/><small>Example: <i>200</i></small>'
+                      currency:
+                        type: string
+                        description: 'Currency code (ISO 4217)<br/><small>Example: <i>EUR</i></small>'
+                      country:
+                        type: string
+                        description: 'Country code (ISO 3166-1)<br/><small>Example: <i>DE</i></small>'
+                      description:
+                        type: string
+                        description: 'Transaction summary<br/><small>Example: <i>Purchase request of order 1234</i></small>'
+                      autoCapture:
+                        type: boolean
+                        description: 'If set to false the payment will require a manual capture after finalization<br/><small>Example: <i>false</i></small>'
+                    description: Monetary details of the transaction
+                  metadata:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: "Free map of tags set by the client<br/><small>Example</small><pre><code>{\n  \"key\": \"value\",\n  \"experiment\": \"checkout_A\",\n  \"promo_code\": \"SPRING2025\"\n}</code></pre>"
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  statusInfo: &id009
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                additionalProperties: false
+              examples:
+                Initiated canceled:
+                  summary: Initiated canceled
+                  description: Payment initiated and canceled
+                  value:
+                    transactionId: p9vhkuj92yav
+                    processingAccountId: merchant-1234
+                    clientTransactionId: client-txn-54c8c9bc
+                    providerDetails:
+                      providerId: SATISPAY
+                      providerTransactionId: 019bb12e-843a-784f-bd77-b69dcfc02e8d
+                      redirectUrl: https://staging-online.satispay.com/pay/019bb12e-843a-784f-bd77-b69dcfc02e8d?redirect_url=https://merchant.com
+                      registeredAt: '2026-01-19T14:32:05.987654Z'
+                      expiresAt: '2026-01-19T14:32:05.987654Z'
+                    payerDetails:
+                      payerId: payerUUID
+                    paymentDetails:
+                      amount: 100
+                      currency: EUR
+                      country: IT
+                      description: Product ID 1234 purchase
+                      autoCapture: true
+                    metadata:
+                      promo: BLACK_FRIDAY
+                      key: value
+                    status: CANCELED
+                    statusInfo:
+                      reasonCode: '-1'
+                      message: Request processed successfully
+                Finalized canceled:
+                  summary: Finalized canceled
+                  description: Payment finalized and canceled
+                  value:
+                    transactionId: p9vhkuj92yav
+                    processingAccountId: merchant-1234
+                    clientTransactionId: client-txn-54c8c9bc
+                    providerDetails:
+                      providerId: SATISPAY
+                      providerTransactionId: 019bb12e-843a-784f-bd66-b69dcfc02e8d
+                      redirectUrl: https://staging-online.satispay.com/pay/019bb12e-843a-784f-bd66-b69dcfc02e8d?redirect_url=https://merchant.com
+                      registeredAt: '2026-01-19T14:32:05.987654Z'
+                      expiresAt: '2026-01-19T14:32:05.987654Z'
+                    payerDetails:
+                      payerId: payerUUID
+                    paymentDetails:
+                      amount: 100
+                      currency: EUR
+                      country: IT
+                      description: Product ID 1234 purchase
+                      autoCapture: true
+                    metadata:
+                      promo: BLACK_FRIDAY
+                      key: value
+                    status: CANCELED
+                    statusInfo:
+                      reasonCode: '-1'
+                      message: Request processed successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusInfo: *id009
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  fields:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: A map of fields that have failed validation
+                additionalProperties: false
+              examples:
+                MalformedJson:
+                  summary: Malformed JSON
+                  description: The JSON is not properly formatted
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4000'
+                      message: The payload was incomplete or didn't pass schema validation. Check required fields and formats.
+                    callId: a3c8cdef0a134df4-2e31b1
+                SignatureError:
+                  summary: Signature error
+                  description: There was an error signing the signature
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4990'
+                      message: Signature error
+                    callId: 0af7a364bc7745f2-b823fc
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: &id010
+                type: object
+                properties:
+                  statusInfo: *id009
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
+              examples:
+                InvalidSignature:
+                  summary: Invalid signature
+                  description: The signature is not valid
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4992'
+                      message: Error validating the signature
+                    callId: a3c8cdef0a134df4-2e31b1
+                TokenExpired:
+                  summary: Token expired
+                  description: Token is expired
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4061'
+                      message: Token is expired
+                    callId: c84b0b9f91714d4e-5d2311
+                UnauthorizedError:
+                  summary: Unauthorized error
+                  description: Unable to authorize user
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4970'
+                      message: Authentication error
+                    callId: be1d37ab317e4b2d-a8f9d4
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema: *id010
+              examples:
+                ForbiddenError:
+                  summary: Forbidden error
+                  description: Authorization has failed
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4971'
+                      message: 'Authorization error: Resource is not allowed'
+                    callId: 0dbad1cf74de4f76-31bc1e
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema: *id010
+              examples:
+                NotFoundError:
+                  summary: Not found
+                  description: Payment not found
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5000'
+                      message: Payment not found
+                    callId: 0dbad1cf74de4f76-31bc1e
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema: *id010
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema: *id010
+              examples:
+                UnprocessableError:
+                  summary: Unprocessable
+                  description: Payment transition not allowed
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5002'
+                      message: Payment transition not allowed
+                    callId: 0af7a364bc7745f2-b823fc
+        '423':
+          description: Locked
+          content:
+            application/json:
+              schema: *id010
+              examples:
+                LockedError:
+                  summary: Locked
+                  description: Payment is currently processing
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5003'
+                      message: Payment is processing
+                    callId: 0af7a364bc7745f2-b823fc
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema: *id010
+              examples:
+                RateLimitError:
+                  summary: Rate limit error
+                  description: The rate limit has been exceeded
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '3000'
+                      message: Rate limit exceeded
+                    callId: 4a9137cf2ccf4c19-00982e
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: *id010
+              examples:
+                InternalServerError:
+                  summary: Internal server error
+                  description: An unexpected error has happened
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '9999'
+                      message: Internal Server Error
+                    callId: e147c3ba09cd496f-bd02e7
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema: *id010
+              examples:
+                NotImplementedError:
+                  summary: Not implemented
+                  description: Operation not supported by the provider
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '8003'
+                      message: Operation not supported
+                    callId: 0af7a364bc7745f2-b823fc
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema: *id010
+              examples:
+                BadGatewayError:
+                  summary: Bad gateway error
+                  description: Unable to reach the provider
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '8004'
+                      message: Provider error
+                    callId: 0af7a364bc7745f2-b823fc
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema: *id010
+              examples:
+                GatewayTimeoutError:
+                  summary: Gateway timeout
+                  description: Provider did not respond in time
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '8001'
+                      message: Provider timeout
+                    callId: 0af7a364bc7745f2-b823fc
+      summary: Cancel payment
+      description: Cancels an initiated but not yet captured payment. Prevents future fund movements.
+  /payments/refund:
+    post:
+      tags:
+      - Payment Processing APIs
+      operationId: refundPayment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                processingAccountId:
+                  type: string
+                  minLength: 1
+                  description: 'Unique identifier of the processing account under which the payment is processed.<br/><small>Example: <i>pa-1234</i></small>'
+                clientTransactionId:
+                  type: string
+                  minLength: 1
+                  description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                transactionId:
+                  type: string
+                  minLength: 1
+                  description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+                paymentDetails:
+                  type: object
+                  properties:
+                    amount:
+                      type: integer
+                      format: int64
+                      minimum: 1
+                      description: 'Total payment amount in minor units<br/><small>Example: <i>200</i></small>'
+                    description:
+                      type: string
+                      minLength: 1
+                      description: 'Transaction summary<br/><small>Example: <i>Purchase request of order 1234</i></small>'
+                  required:
+                  - description
+                  description: Monetary details of the transaction
+              required:
+              - clientTransactionId
+              - paymentDetails
+              - processingAccountId
+              - transactionId
+              additionalProperties: false
+            examples:
+              Refund:
+                summary: Refund
+                description: Refunds a payment
+                value:
+                  processingAccountId: merchant-1234
+                  transactionId: p9vhkuj92yav
+                  clientTransactionId: client-txn-54c8c9bc
+                  paymentDetails:
+                    amount: 75
+                    description: Refund for Product ID 1234
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  originalTransactionId:
+                    type: string
+                    description: 'Nopan''s transaction ID that originated the payment<br/><small>Example: <i>94rbvsyghh0x</i></small>'
+                  transactionId:
+                    type: string
+                    description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+                  processingAccountId:
+                    type: string
+                    description: 'Unique identifier of the processing account under which the payment is processed.<br/><small>Example: <i>pa-1234</i></small>'
+                  clientTransactionId:
+                    type: string
+                    description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                  providerDetails:
+                    type: object
+                    properties:
+                      providerId:
+                        type: string
+                        enum:
+                        - IRIS
+                        - SATISPAY
+                        - WERO
+                        - BIZUM
+                        - BLIK
+                        description: The payment scheme provider ID<br/><small>• <b> IRIS</b> Greek instant account-to-account payment system</small><br/><small>• <b> SATISPAY</b> Independent Italian mobile money app for everyday payments</small><br/><small>• <b> WERO</b> New EU digital wallet and instant payment scheme</small><br/><small>• <b> BIZUM</b> Spanish real-time mobile payment solution linked to bank accounts</small><br/><small>• <b> BLIK</b> Polish mobile payments system used for online and in-store transfers</small>
+                      providerTransactionId:
+                        type: string
+                        description: 'Transaction reference returned by the provider<br/><small>Example: <i>wero-1234</i></small>'
+                      registeredAt:
+                        type: string
+                        format: date-time
+                        description: 'Timestamp when the transaction was registered in the provider<br/><small>Example: <i>1748699594</i></small>'
+                      providerStatusInfo:
+                        type: object
+                        properties:
+                          reasonCode:
+                            type: string
+                            description: 'The provider''s response status code if available<br/><small>Example: <i>FF01</i></small>'
+                          message:
+                            type: string
+                            description: 'The provider''s response status message if available<br/><small>Example: <i>The initiating party return URL is invalid</i></small>'
+                        description: The provider's response status if available
+                    description: Payment scheme provider details
+                  paymentDetails:
+                    type: object
+                    properties:
+                      amount:
+                        type: integer
+                        format: int64
+                        description: 'Total payment amount in minor units<br/><small>Example: <i>200</i></small>'
+                    description: Monetary details of the transaction
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  statusInfo: &id011
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                additionalProperties: false
+              examples:
+                Refunded:
+                  summary: Payment refunded
+                  description: The payment has been refunded
+                  value:
+                    transactionId: r8kp2mq45zbt
+                    originalTransactionId: p9vhkuj92yav
+                    processingAccountId: merchant-1234
+                    clientTransactionId: client-txn-54c8c9bc
+                    providerDetails:
+                      providerId: IRIS
+                      providerTransactionId: '202604011213440000000000000105449'
+                      registeredAt: '2026-04-01T12:13:44.773Z'
+                    paymentDetails:
+                      amount: 75
+                    status: APPROVED
+                    statusInfo:
+                      reasonCode: '-1'
+                      message: Request processed successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusInfo: *id011
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  fields:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: A map of fields that have failed validation
+                additionalProperties: false
+              examples:
+                MalformedJson:
+                  summary: Malformed JSON
+                  description: The JSON is not properly formatted
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4000'
+                      message: The payload was incomplete or didn't pass schema validation. Check required fields and formats.
+                    callId: a3c8cdef0a134df4-2e31b1
+                SignatureError:
+                  summary: Signature error
+                  description: There was an error signing the signature
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4990'
+                      message: Signature error
+                    callId: 0af7a364bc7745f2-b823fc
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: &id012
+                type: object
+                properties:
+                  statusInfo: *id011
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
+              examples:
+                InvalidSignature:
+                  summary: Invalid signature
+                  description: The signature is not valid
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4992'
+                      message: Error validating the signature
+                    callId: a3c8cdef0a134df4-2e31b1
+                TokenExpired:
+                  summary: Token expired
+                  description: Token is expired
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4061'
+                      message: Token is expired
+                    callId: c84b0b9f91714d4e-5d2311
+                UnauthorizedError:
+                  summary: Unauthorized error
+                  description: Unable to authorize user
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4970'
+                      message: Authentication error
+                    callId: be1d37ab317e4b2d-a8f9d4
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema: *id012
+              examples:
+                ForbiddenError:
+                  summary: Forbidden error
+                  description: Authorization has failed
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4971'
+                      message: 'Authorization error: Resource is not allowed'
+                    callId: 0dbad1cf74de4f76-31bc1e
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema: *id012
+              examples:
+                NotFoundError:
+                  summary: Not found
+                  description: Payment not found
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5000'
+                      message: Payment not found
+                    callId: 0dbad1cf74de4f76-31bc1e
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema: *id012
+              examples:
+                ConflictError:
+                  summary: Conflict error
+                  description: Payment transaction is already created
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5001'
+                      message: Payment already exists
+                    callId: 9cf37980efdc4316-01a4bc
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema: *id012
+              examples:
+                UnprocessableError:
+                  summary: Unprocessable
+                  description: Payment transition not allowed
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5002'
+                      message: Payment transition not allowed
+                    callId: 0af7a364bc7745f2-b823fc
+        '423':
+          description: Locked
+          content:
+            application/json:
+              schema: *id012
+              examples:
+                LockedError:
+                  summary: Locked
+                  description: Payment is currently processing
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '5003'
+                      message: Payment is processing
+                    callId: 0af7a364bc7745f2-b823fc
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema: *id012
+              examples:
+                RateLimitError:
+                  summary: Rate limit error
+                  description: The rate limit has been exceeded
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '3000'
+                      message: Rate limit exceeded
+                    callId: 4a9137cf2ccf4c19-00982e
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: *id012
+              examples:
+                InternalServerError:
+                  summary: Internal server error
+                  description: An unexpected error has happened
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '9999'
+                      message: Internal Server Error
+                    callId: e147c3ba09cd496f-bd02e7
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema: *id012
+              examples:
+                NotImplementedError:
+                  summary: Not implemented
+                  description: Operation not supported by the provider
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '8003'
+                      message: Operation not supported
+                    callId: 0af7a364bc7745f2-b823fc
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema: *id012
+              examples:
+                BadGatewayError:
+                  summary: Bad gateway error
+                  description: Unable to reach the provider
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '8004'
+                      message: Provider error
+                    callId: 0af7a364bc7745f2-b823fc
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema: *id012
+              examples:
+                GatewayTimeoutError:
+                  summary: Gateway timeout
+                  description: Provider did not respond in time
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '8001'
+                      message: Provider timeout
+                    callId: 0af7a364bc7745f2-b823fc
+      summary: Refund payment
+      description: Refunds a previously captured payment, either fully or partially. Used to reverse a transaction after funds have already been settled.
+  /payments/{transactionId}/status:
+    get:
+      tags:
+      - Payment Processing APIs
+      operationId: getPaymentStatus
+      parameters:
+      - name: transactionId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactionId:
+                    type: string
+                    description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+                  processingAccountId:
+                    type: string
+                    description: 'Unique identifier of the processing account under which the payment is processed.<br/><small>Example: <i>pa-1234</i></small>'
+                  clientTransactionId:
+                    type: string
+                    description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                  metadata:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: "Free map of tags set by the client<br/><small>Example</small><pre><code>{\n  \"key\": \"value\",\n  \"experiment\": \"checkout_A\",\n  \"promo_code\": \"SPRING2025\"\n}</code></pre>"
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  statusInfo: &id013
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                additionalProperties: false
+              examples:
+                StatusIris:
+                  summary: Status - IRIS
+                  description: Status of a payment
+                  value:
+                    transactionId: p9vhkuj92yav
+                    clientTransactionId: merchant-12345678
+                    processingAccountId: merchant-1234
+                    metadata:
+                      orderId: '12345'
+                      customerId: cust-789
+                      productCategory: electronics
+                    status: APPROVED
+                    statusInfo:
+                      message: Request processed successfully
+                      reasonCode: '-1'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusInfo: *id013
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  fields:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: A map of fields that have failed validation
+                additionalProperties: false
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: &id014
+                type: object
+                properties:
+                  statusInfo: *id013
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema: *id014
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema: *id014
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema: *id014
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema: *id014
+        '423':
+          description: Locked
+          content:
+            application/json:
+              schema: *id014
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema: *id014
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: *id014
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema: *id014
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema: *id014
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema: *id014
+      summary: Payment status
+      description: Returns the current status of a payment
+  /payments/{transactionId}/events:
+    get:
+      tags:
+      - Payment Processing APIs
+      operationId: getPaymentEvents
+      parameters:
+      - name: transactionId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactionId:
+                    type: string
+                    description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+                  processingAccountId:
+                    type: string
+                    description: 'Unique identifier of the processing account under which the payment is processed.<br/><small>Example: <i>pa-1234</i></small>'
+                  clientTransactionId:
+                    type: string
+                    description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                  providerDetails:
+                    type: object
+                    properties:
+                      providerId:
+                        type: string
+                        enum:
+                        - IRIS
+                        - SATISPAY
+                        - WERO
+                        - BIZUM
+                        - BLIK
+                        description: The payment scheme provider ID<br/><small>• <b> IRIS</b> Greek instant account-to-account payment system</small><br/><small>• <b> SATISPAY</b> Independent Italian mobile money app for everyday payments</small><br/><small>• <b> WERO</b> New EU digital wallet and instant payment scheme</small><br/><small>• <b> BIZUM</b> Spanish real-time mobile payment solution linked to bank accounts</small><br/><small>• <b> BLIK</b> Polish mobile payments system used for online and in-store transfers</small>
+                      providerTransactionId:
+                        type: string
+                        description: 'Transaction reference returned by the provider<br/><small>Example: <i>wero-1234</i></small>'
+                      redirectUrl:
+                        type: string
+                        description: 'The URL where the payer should perform SCA<br/><small>Example: <i>https://auth.merchant.com/token=consent_1234</i></small>'
+                      registeredAt:
+                        type: string
+                        format: date-time
+                        description: 'Timestamp when the transaction was registered in the provider<br/><small>Example: <i>1748699594</i></small>'
+                      expiresAt:
+                        type: string
+                        format: date-time
+                        description: 'Timestamp when the redirect URL expires<br/><small>Example: <i>1748622594</i></small>'
+                      qrCode:
+                        type: string
+                        description: 'A free format QR code to be used for SCA<br/><small>Example: <i>IRISCOM5e77cad0-9de5-4dcb-a13e-857569359de0</i></small>'
+                      providerStatusInfo: &id015
+                        type: object
+                        properties:
+                          reasonCode:
+                            type: string
+                            description: 'The provider''s response status code if available<br/><small>Example: <i>FF01</i></small>'
+                          message:
+                            type: string
+                            description: 'The provider''s response status message if available<br/><small>Example: <i>The initiating party return URL is invalid</i></small>'
+                        description: The provider's response status if available
+                    description: Payment scheme provider details
+                  payerDetails:
+                    type: object
+                    properties:
+                      payerId:
+                        type: string
+                        description: 'The payer''s ID provided by the client<br/><small>Example: <i>shopper-1234</i></small>'
+                      phone:
+                        type: object
+                        properties:
+                          countryCode:
+                            type: string
+                            minLength: 1
+                            pattern: ^\+\d{1,4}$
+                            description: 'The payer''s phone country code<br/><small>Example: <i>+34</i></small>'
+                          number:
+                            type: string
+                            minLength: 1
+                            pattern: ^\d{6,10}$
+                            description: 'The payer''s phone number<br/><small>Example: <i>644786335</i></small>'
+                        required:
+                        - countryCode
+                        - number
+                        description: The payer's phone
+                      oneTimeCode:
+                        type: string
+                        description: 'One time code before SCA<br/><small>Example: <i>123456</i></small>'
+                      paymentToken:
+                        type: string
+                        description: 'The payment token of the payer<br/><small>Example: <i>eyJraWQiOiI5MDU5OGE2NC1jZWNlLTQ1YzItOGUzMy02OTAzODA5OTBlYjgiLCJhbGciOiJSUzI1NiJ9...</i></small>'
+                    description: Payer identity information
+                  paymentDetails:
+                    type: object
+                    properties:
+                      amount:
+                        type: integer
+                        format: int64
+                        description: 'Total payment amount in minor units<br/><small>Example: <i>200</i></small>'
+                      capturedAmount:
+                        type: integer
+                        format: int64
+                        description: 'Total captured amount in minor units so far<br/><small>Example: <i>200</i></small>'
+                      refundedAmount:
+                        type: integer
+                        format: int64
+                        description: 'Total refunded amount in minor units so far<br/><small>Example: <i>100</i></small>'
+                      currency:
+                        type: string
+                        description: 'Currency code (ISO 4217)<br/><small>Example: <i>EUR</i></small>'
+                      country:
+                        type: string
+                        description: 'Country code (ISO 3166-1)<br/><small>Example: <i>DE</i></small>'
+                      description:
+                        type: string
+                        description: 'Transaction summary<br/><small>Example: <i>Purchase request of order 1234</i></small>'
+                      autoCapture:
+                        type: boolean
+                        description: 'If set to false the payment will require a manual capture after finalization<br/><small>Example: <i>false</i></small>'
+                      captures:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            clientTransactionId:
+                              type: string
+                              description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                            paymentDetails: &id016
+                              type: object
+                              properties:
+                                amount:
+                                  type: integer
+                                  format: int64
+                              description: Monetary details of the transaction
+                            providerDetails: &id017
+                              type: object
+                              properties:
+                                providerTransactionId:
+                                  type: string
+                                  description: 'Transaction reference returned by the provider<br/><small>Example: <i>wero-1234</i></small>'
+                                registeredAt:
+                                  type: string
+                                  format: date-time
+                                providerStatusInfo: *id015
+                              description: Payment scheme provider details
+                            status:
+                              type: string
+                              enum:
+                              - ACCEPTED
+                              - APPROVED
+                              - DECLINED
+                              description: The current state of the capture<br/><small>• <b> APPROVED</b> Capture successfully executed and funds collected</small><br/><small>• <b> DECLINED</b> Capture request rejected and funds were not collected</small>
+                            statusInfo: &id018
+                              type: object
+                              properties:
+                                reasonCode:
+                                  type: string
+                                  description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                                message:
+                                  type: string
+                                  description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                              description: The information about the status of the request
+                            timestamp:
+                              type: string
+                              format: date-time
+                              description: Timestamp when the capture was recorded.
+                        description: Collection of records for each capture attempted and/or performed on the payment
+                      refunds:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            clientTransactionId:
+                              type: string
+                              description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                            paymentDetails: *id016
+                            providerDetails: *id017
+                            status:
+                              type: string
+                              enum:
+                              - ACCEPTED
+                              - APPROVED
+                              - DECLINED
+                              description: The current state of the refund<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> APPROVED</b> Refund successfully executed and funds returned</small><br/><small>• <b> DECLINED</b> Refund request rejected and will not proceed</small>
+                            statusInfo: *id018
+                            timestamp:
+                              type: string
+                              format: date-time
+                              description: Timestamp when the refund was recorded.
+                        description: Collection of records for each refund attempted and/or performed on the payment
+                    description: Monetary details of the transaction
+                  metadata:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: "Free map of tags set by the client<br/><small>Example</small><pre><code>{\n  \"key\": \"value\",\n  \"experiment\": \"checkout_A\",\n  \"promo_code\": \"SPRING2025\"\n}</code></pre>"
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  statusInfo: *id018
+                additionalProperties: false
+              examples:
+                StatusIris:
+                  summary: Events - IRIS
+                  description: Events of a payment
+                  value:
+                    transactionId: p9vhkuj92yav
+                    clientTransactionId: merchant-12345678
+                    processingAccountId: merchant-1234
+                    providerDetails:
+                      providerId: IRIS
+                      providerTransactionId: '202604011213440000000000000105449'
+                      registeredAt: '2026-04-01T12:13:44.773Z'
+                      qrCode: https://test-iris.dias.com.gr/iris-ecommerce-demo/webBanking.html?authorizationRequestID=f02505f4-04f7-479a-bbd3-69e6bc048419
+                    payerDetails:
+                      payerId: payerUUID
+                    paymentDetails:
+                      amount: 100
+                      capturedAmount: 100
+                      refundedAmount: 0
+                      currency: EUR
+                      country: GR
+                      description: Play Station 5 game
+                      autoCapture: true
+                      captures:
+                      - clientTransactionId: merchant-12345678
+                        paymentDetails:
+                          amount: 100
+                        providerDetails:
+                          providerTransactionId: '202604011213440000000000000105449'
+                        status: APPROVED
+                        statusInfo:
+                          message: Request processed successfully
+                          reasonCode: '-1'
+                        timestamp: '2026-04-01T12:14:09.082Z'
+                    metadata:
+                      orderId: '12345'
+                      customerId: cust-789
+                      productCategory: electronics
+                    status: APPROVED
+                    statusInfo:
+                      message: Request processed successfully
+                      reasonCode: '-1'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusInfo: *id018
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  fields:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: A map of fields that have failed validation
+                additionalProperties: false
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: &id019
+                type: object
+                properties:
+                  statusInfo: *id018
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema: *id019
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema: *id019
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema: *id019
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema: *id019
+        '423':
+          description: Locked
+          content:
+            application/json:
+              schema: *id019
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema: *id019
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: *id019
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema: *id019
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema: *id019
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema: *id019
+      summary: Payment events
+      description: Returns a full timeline of state transitions and system events for a given payment

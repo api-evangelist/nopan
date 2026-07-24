@@ -1,0 +1,371 @@
+openapi: 3.0.3
+info:
+  version: v1
+  title: Nopan Authentication APIs Testing APIs API
+  description: 'Download Nopan Postman collection: [Download](/postman/nopan-api-collection.zip)'
+servers:
+- url: https://api.nopan.io
+tags:
+- name: Testing APIs
+  description: The Nopan API includes a sandbox environment and test endpoints to help developers safely simulate, mock and validate payment flows without processing real transactions. These testing APIs mirror the behavior of the live endpoints, allowing you to initiate payments, trigger SCA flows, and verify callbacks using predefined test data. This environment is ideal for integration testing, QA workflows, and development staging before going live.
+paths:
+  /mock/set:
+    post:
+      tags:
+      - Testing APIs
+      operationId: mockPayment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                processingAccountId:
+                  type: string
+                  minLength: 1
+                  description: 'Unique identifier of the processing account under which the payment is processed.<br/><small>Example: <i>pa-1234</i></small>'
+                key:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                      - CLIENT_TRANSACTION_ID
+                      - PAYER_ID
+                      description: Field to match as a key<br/><small>• <b> CLIENT_TRANSACTION_ID</b> Client transaction ID</small><br/><small>• <b> PAYER_ID</b> Payer ID</small>
+                    value:
+                      type: string
+                      minLength: 1
+                      description: Value of the field set in key. If payment request match this, the mock will be used.
+                  required:
+                  - type
+                  - value
+                  description: Information about the key type and value to be mocked
+                type:
+                  type: string
+                  enum:
+                  - MOCK
+                  - PASSTHROUGH
+                  description: The mock type<br/><small>• <b> MOCK</b> Use Mock engine</small><br/><small>• <b> PASSTHROUGH</b> Use real payment scheme provider</small>
+                oneTime:
+                  type: boolean
+                  description: If true, the mock will be deleted for that step after one call
+                steps:
+                  type: object
+                  properties:
+                    initiateStep:
+                      type: object
+                      properties:
+                        providerDetails:
+                          type: object
+                          properties:
+                            providerTransactionId:
+                              type: string
+                              description: 'Transaction reference returned by the provider<br/><small>Example: <i>wero-1234</i></small>'
+                            redirectUrl:
+                              type: string
+                              description: 'The URL where the payer should perform SCA<br/><small>Example: <i>https://auth.merchant.com/token=consent_1234</i></small>'
+                            registeredAt:
+                              type: string
+                              format: date-time
+                              description: 'Timestamp when the transaction was registered in the provider<br/><small>Example: <i>1748699594</i></small>'
+                            expiresAt:
+                              type: string
+                              format: date-time
+                              description: 'Timestamp when the redirect URL expires<br/><small>Example: <i>1748622594</i></small>'
+                            qrCode:
+                              type: string
+                              description: 'A free format QR code to be used for SCA<br/><small>Example: <i>IRISCOM5e77cad0-9de5-4dcb-a13e-857569359de0</i></small>'
+                          description: Payment scheme provider details
+                        status:
+                          type: string
+                          enum:
+                          - PENDING
+                          - DECLINED
+                          description: The current state of the transaction<br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small>
+                        statusInfo: &id001
+                          type: object
+                          properties:
+                            reasonCode:
+                              type: string
+                              description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                            message:
+                              type: string
+                              description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                          description: The information about the status of the request
+                      description: Mock information for the initiate payment step
+                    finalizeStep:
+                      type: object
+                      properties:
+                        providerDetails:
+                          type: object
+                          properties:
+                            providerTransactionId:
+                              type: string
+                              description: 'Transaction reference returned by the provider<br/><small>Example: <i>wero-1234</i></small>'
+                            registeredAt:
+                              type: string
+                              format: date-time
+                              description: 'Timestamp when the transaction was registered in the provider<br/><small>Example: <i>1748699594</i></small>'
+                            expiresAt:
+                              type: string
+                              format: date-time
+                              description: 'Timestamp when the redirect URL expires<br/><small>Example: <i>1748622594</i></small>'
+                          description: Payment scheme provider details
+                        status:
+                          type: string
+                          enum:
+                          - PENDING
+                          - APPROVED
+                          - DECLINED
+                          description: The current state of the transaction<br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small>
+                        statusInfo: *id001
+                      description: Mock information for the finalize payment step
+                    captureStep:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                          enum:
+                          - APPROVED
+                          - DECLINED
+                          description: The current state of the transaction<br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small>
+                        providerDetails:
+                          type: object
+                          properties:
+                            providerTransactionId:
+                              type: string
+                              description: 'Transaction reference returned by the provider<br/><small>Example: <i>wero-1234</i></small>'
+                            registeredAt:
+                              type: string
+                              format: date-time
+                              description: 'Timestamp when the transaction was registered in the provider<br/><small>Example: <i>1748699594</i></small>'
+                          description: Payment scheme provider details
+                        statusInfo: *id001
+                      description: Mock information for the capture payment step
+                    cancelStep:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                          enum:
+                          - CANCELED
+                          - DECLINED
+                          description: The current state of the transaction<br/><small>• <b> CANCELED</b> The transaction has been canceled</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small>
+                        statusInfo: *id001
+                      description: Mock information for the cancel payment step
+                    refundStep:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                          enum:
+                          - ACCEPTED
+                          - APPROVED
+                          - DECLINED
+                          description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small>
+                        providerDetails:
+                          type: object
+                          properties:
+                            providerTransactionId:
+                              type: string
+                              description: 'Transaction reference returned by the provider<br/><small>Example: <i>wero-1234</i></small>'
+                            registeredAt:
+                              type: string
+                              format: date-time
+                              description: 'Timestamp when the transaction was registered in the provider<br/><small>Example: <i>1748699594</i></small>'
+                          description: Payment scheme provider details
+                        statusInfo: *id001
+                      description: Mock information for the refund payment step
+                    chargeStep:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                          enum:
+                          - APPROVED
+                          - DECLINED
+                          description: The current state of the transaction<br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small>
+                        providerDetails:
+                          type: object
+                          properties:
+                            providerTransactionId:
+                              type: string
+                              description: 'Transaction reference returned by the provider<br/><small>Example: <i>wero-1234</i></small>'
+                            registeredAt:
+                              type: string
+                              format: date-time
+                              description: 'Timestamp when the transaction was registered in the provider<br/><small>Example: <i>1748699594</i></small>'
+                          description: Payment scheme provider details
+                        statusInfo: *id001
+                      description: Mock information for the charge payment step
+                  description: Information to be mocked for each of the payment steps
+                scenario:
+                  type: string
+                  enum:
+                  - OK
+                  - INSUFFICIENT_FUNDS
+                  description: The scenario for the transaction. Will override necessary values for each provider to give the configured outcome
+              required:
+              - key
+              - processingAccountId
+              - type
+              additionalProperties: false
+            examples:
+              MockMode:
+                summary: 'Mock mode: All fields mocked'
+                description: Create a mock for all the steps in MOCK mode.
+                value:
+                  processingAccountId: merchant-1234
+                  key:
+                    type: CLIENT_TRANSACTION_ID
+                    value: client-txn-54c8c9bc
+                  type: MOCK
+                  oneTime: false
+                  steps:
+                    initiate:
+                      clientTransactionId: client-txn-54c8c9bc
+                      status: ACCEPTED
+                      providerDetails:
+                        providerTransactionId: 9c82132e-eb2a-491c-970d-47260d4122b0
+                        redirectUrl: https://merchant.callback.com
+                        registeredAt: 1748505211886
+                        expiresAt: 1748505271887
+                      statusInfo:
+                        reasonCode: '-1'
+                        message: Awaiting user consent
+              PassThroughMode:
+                summary: Pass-through mode
+                description: Create a mock for all the steps in PASSTHROUGH mode.
+                value:
+                  processingAccountId: merchant-1234
+                  key:
+                    type: CLIENT_TRANSACTION_ID
+                    value: order123
+                  type: PASSTHROUGH
+                  scenario: OK
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusInfo: *id001
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  fields:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: A map of fields that have failed validation
+                additionalProperties: false
+              examples:
+                MalformedJson:
+                  summary: Malformed JSON
+                  description: The JSON is not properly formatted
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4000'
+                      message: The payload was incomplete or didn't pass schema validation. Check required fields and formats.
+                    callId: a3c8cdef0a134df4-2e31b1
+                ValidationFailure:
+                  summary: Validation failure
+                  description: The client ID and payment amount are invalid
+                  value:
+                    status: DECLINED
+                    statusInfo:
+                      reasonCode: '4000'
+                      message: Invalid input
+                    fields:
+                      processingAccountId: Processing Account ID is required
+                      paymentDetails.amount: Amount is required
+                    callId: 678c62b0177e4bc3-a12309
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: &id002
+                type: object
+                properties:
+                  statusInfo: *id001
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema: *id002
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema: *id002
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema: *id002
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema: *id002
+        '423':
+          description: Locked
+          content:
+            application/json:
+              schema: *id002
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema: *id002
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema: *id002
+        '501':
+          description: Not Implemented
+          content:
+            application/json:
+              schema: *id002
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema: *id002
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema: *id002
+      summary: Mock payment flow
+      description: Mocks a payment flow. Mock will match requests using processingAccountId and key.

@@ -1,0 +1,270 @@
+openapi: 3.0.3
+info:
+  version: v1
+  title: Nopan Authentication APIs Webhooks API
+  description: 'Download Nopan Postman collection: [Download](/postman/nopan-api-collection.zip)'
+servers:
+- url: https://api.nopan.io
+tags:
+- name: Webhooks
+  description: API of the webhooks notifications Nopan will send if configured in the portal.
+paths:
+  /notifications/paymentInitiate:
+    post:
+      tags:
+      - Webhooks
+      operationId: initiateNotification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notificationId:
+                  type: string
+                  format: uuid
+                  description: 'Unique id of the notification.<br/><small>Example: <i>56562de8-9b89-4628-b2fe-cd1b2cc1e95b</i></small>'
+                transactionId:
+                  type: string
+                  description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+                clientTransactionId:
+                  type: string
+                  description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                status:
+                  type: string
+                  description: The current state of the transaction
+                statusInfo:
+                  type: object
+                  properties:
+                    reasonCode:
+                      type: string
+                    message:
+                      type: string
+                  description: The information about the status of the request
+                notificationType:
+                  type: string
+                  enum:
+                  - PAYMENT_INITIATE
+                  - PAYMENT_FINALIZE
+                  - PAYMENT_CAPTURE
+                  - PAYMENT_REFUND
+              additionalProperties: false
+            examples:
+              Initiated:
+                summary: Payment initiate notification
+                description: Initiate information including status, etc
+                value:
+                  notificationId: fc5adbcd-5f08-4d09-9307-08d950809f0d
+                  transactionId: p9vhkuj92yav
+                  clientTransactionId: client-txn-54c8c9bc
+                  status: PENDING
+                  statusInfo:
+                    reasonCode: '-1'
+                    message: OK
+                  notificationType: PAYMENT_INITIATE
+        required: true
+      responses:
+        '200':
+          description: OK
+      summary: Payment initiate notification
+      description: Notifies you about updates on initiate. The exact path of the request is configured through our portal.
+  /notifications/paymentFinalize:
+    post:
+      tags:
+      - Webhooks
+      operationId: finalizedNotification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notificationId:
+                  type: string
+                  format: uuid
+                  description: 'Unique id of the notification.<br/><small>Example: <i>56562de8-9b89-4628-b2fe-cd1b2cc1e95b</i></small>'
+                transactionId:
+                  type: string
+                  description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+                clientTransactionId:
+                  type: string
+                  description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                payerDetails:
+                  type: object
+                  properties:
+                    paymentToken:
+                      type: string
+                      description: 'The payment token of the payer<br/><small>Example: <i>eyJraWQiOiI5MDU5OGE2NC1jZWNlLTQ1YzItOGUzMy02OTAzODA5OTBlYjgiLCJhbGciOiJSUzI1NiJ9...</i></small>'
+                  description: Payer identity information
+                status:
+                  type: string
+                  description: The current state of the transaction
+                statusInfo:
+                  type: object
+                  properties:
+                    reasonCode:
+                      type: string
+                    message:
+                      type: string
+                  description: The information about the status of the request
+                notificationType:
+                  type: string
+                  enum:
+                  - PAYMENT_INITIATE
+                  - PAYMENT_FINALIZE
+                  - PAYMENT_CAPTURE
+                  - PAYMENT_REFUND
+              additionalProperties: false
+            examples:
+              Finalized:
+                summary: Payment finalize notification
+                description: Finalize information including status, etc.
+                value:
+                  notificationId: fc5adbcd-5f08-4d09-9307-08d950809f0d
+                  transactionId: p9vhkuj92yav
+                  clientTransactionId: client-txn-54c8c9bc
+                  status: APPROVED
+                  statusInfo:
+                    reasonCode: '-1'
+                    message: OK
+                  notificationType: PAYMENT_FINALIZE
+        required: true
+      responses:
+        '200':
+          description: OK
+      summary: Payment finalize notification
+      description: Notifies you about updates on finalize. The exact path of the request is configured through our portal.
+  /notifications/paymentCapture:
+    post:
+      tags:
+      - Webhooks
+      operationId: captureNotification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notificationId:
+                  type: string
+                  format: uuid
+                  description: 'Unique id of the notification.<br/><small>Example: <i>56562de8-9b89-4628-b2fe-cd1b2cc1e95b</i></small>'
+                transactionId:
+                  type: string
+                  description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+                clientTransactionId:
+                  type: string
+                  description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                amount:
+                  type: integer
+                  format: int64
+                capturedAmount:
+                  type: integer
+                  format: int64
+                status:
+                  type: string
+                  description: The current state of the transaction
+                statusInfo:
+                  type: object
+                  properties:
+                    reasonCode:
+                      type: string
+                    message:
+                      type: string
+                  description: The information about the status of the request
+                notificationType:
+                  type: string
+                  enum:
+                  - PAYMENT_INITIATE
+                  - PAYMENT_FINALIZE
+                  - PAYMENT_CAPTURE
+                  - PAYMENT_REFUND
+              additionalProperties: false
+            examples:
+              Capture:
+                summary: Payment capture notification
+                description: Capture information including amount, status, etc.
+                value:
+                  notificationId: fc5adbcd-5f08-4d09-9307-08d950809f0d
+                  transactionId: p9vhkuj92yav
+                  clientTransactionId: client-txn-54c8c9bc
+                  amount: 1000
+                  capturedAmount: 1000
+                  status: APPROVED
+                  statusInfo:
+                    reasonCode: '-1'
+                    message: OK
+                  notificationType: PAYMENT_CAPTURE
+        required: true
+      responses:
+        '200':
+          description: OK
+      summary: Payment capture notification
+      description: Notifies you about updates on capture. The exact path of the request is configured through our portal.
+  /notifications/paymentRefund:
+    post:
+      tags:
+      - Webhooks
+      operationId: refundNotification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notificationId:
+                  type: string
+                  format: uuid
+                  description: 'Unique id of the notification.<br/><small>Example: <i>56562de8-9b89-4628-b2fe-cd1b2cc1e95b</i></small>'
+                transactionId:
+                  type: string
+                  description: 'Nopan''s transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>'
+                clientTransactionId:
+                  type: string
+                  description: 'The unique client''s internal transaction ID<br/><small>Example: <i>order11234</i></small>'
+                amount:
+                  type: integer
+                  format: int64
+                refundedAmount:
+                  type: integer
+                  format: int64
+                status:
+                  type: string
+                  description: The current state of the transaction
+                statusInfo:
+                  type: object
+                  properties:
+                    reasonCode:
+                      type: string
+                    message:
+                      type: string
+                  description: The information about the status of the request
+                notificationType:
+                  type: string
+                  enum:
+                  - PAYMENT_INITIATE
+                  - PAYMENT_FINALIZE
+                  - PAYMENT_CAPTURE
+                  - PAYMENT_REFUND
+              additionalProperties: false
+            examples:
+              Refund:
+                summary: Payment refunded notification
+                description: Refund information including amount, status, etc.
+                value:
+                  notificationId: fc5adbcd-5f08-4d09-9307-08d950809f0d
+                  transactionId: p9vhkuj92yav
+                  clientTransactionId: client-txn-54c8c9bc
+                  amount: 1000
+                  refundedAmount: 1000
+                  status: APPROVED
+                  statusInfo:
+                    reasonCode: '-1'
+                    message: OK
+                  notificationType: PAYMENT_REFUND
+        required: true
+      responses:
+        '200':
+          description: OK
+      summary: Payment refund notification
+      description: Notifies you about updates on refund. The exact path of the request is configured through our portal.
