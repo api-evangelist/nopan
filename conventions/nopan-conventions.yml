@@ -1,0 +1,42 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.nopan.com/guides
+description: >-
+  Cross-cutting request/response semantics for the Nopan payments API, captured
+  from the developer guides and derived from the OpenAPI definition.
+authentication:
+  style: OAuth2 client_credentials (machine-to-machine) over mutual TLS (mTLS)
+  token: Bearer JWT access token from POST /auth/token
+  request_signing: JWS (JSON Web Signature) on every request
+  notes: mTLS + JWS secure every request; RBAC and tokenization applied server-side.
+  see: authentication/nopan-authentication.yml
+idempotency:
+  supported: true
+  header: Idempotency-Key
+  scope: mutating operations (initiate, finalize, charge, capture, cancel, refund); ignored for read-only endpoints
+  key_format: UUIDv4 recommended
+  retention: 24 hours
+  behavior: >-
+    Duplicate requests carrying the same Idempotency-Key are detected, re-processing
+    is skipped, and the original result is returned. Retry only with the same payload
+    and the same key.
+  docs: https://docs.nopan.com/guides/idempotency
+request_tracing:
+  field: callId
+  location: response body (statusInfo envelope)
+  description: Every response echoes a callId request tracing ID; include it in support requests.
+versioning:
+  scheme: uri-version
+  current: v1
+  docs: https://docs.nopan.com/guides/versioning
+error_envelope:
+  format: nopan-status-envelope (not RFC 9457)
+  fields: [status, statusInfo.reasonCode, statusInfo.message, callId, fields]
+  see: errors/nopan-error-codes.yml
+rate_limiting:
+  signal: HTTP 429 with reasonCode 3000 (Rate limit exceeded)
+webhooks:
+  supported: true
+  see: asyncapi/nopan-webhooks.yml
+payment_lifecycle:
+  statuses: [ACCEPTED, PENDING, APPROVED, DECLINED, CANCELED]

@@ -1,0 +1,41 @@
+# Nopan
+
+> Nopan is a specialized Payment Service Provider (PSP), built by former merchants and Netflix payments leaders, focused exclusively on European account and wallet payment methods (Wero, BLIK, Bizum, Satispay, IRIS). It exposes a single standardized API for A2A and wallet payments with optimized conversion flows, PSP-agnostic tokenization for recurring/MIT payments, a multi-currency settlement engine, and normalized transaction data. Licensed as a Payment Institution by De Nederlandsche Bank (DNB); PSD2/SCA compliant.
+
+## APIs
+- [Nopan API](https://api.nopan.io): OAuth2 client_credentials over mTLS with JWS request signing. Base URL https://api.nopan.io.
+
+## Specs
+- [OpenAPI (original)](https://docs.nopan.com/redocusaurus/plugin-redoc-0.yaml): OpenAPI 3.0.3, 16 operations across Authentication, Payment Processing, Testing, Webhooks, and Reporting.
+
+## Docs
+- [Documentation](https://docs.nopan.com/)
+- [API Reference](https://docs.nopan.com/api)
+- [Authentication](https://docs.nopan.com/guides/authentication)
+- [Idempotency](https://docs.nopan.com/guides/idempotency)
+- [Webhooks](https://docs.nopan.com/guides/webhooks/webhook-types)
+- [Versioning](https://docs.nopan.com/guides/versioning)
+- [Errors](https://docs.nopan.com/guides/errors)
+- [AI Skills](https://docs.nopan.com/guides/ai-skills)
+- [Integration walkthrough (sandbox)](https://docs.nopan.com/guides/integration-walkthrough)
+
+## Operations
+- getAccessToken — POST /auth/token
+- initiatePayment — POST /payments/initiate
+- finalizePayment — POST /payments/finalize
+- chargePayment — POST /payments/charge
+- capturePayment — POST /payments/capture
+- cancelPayment — POST /payments/cancel
+- refundPayment — POST /payments/refund
+- getPaymentStatus — GET /payments/{transactionId}/status
+- getPaymentEvents — GET /payments/{transactionId}/events
+- mockPayment — POST /mock/set
+- searchReports — GET /reports
+- downloadReport — GET /reports/download
+
+## Company
+- [Website](https://nopan.com)
+- [About](https://nopan.com/about-us)
+- [Blog](https://nopan.com/blog)
+- [Contact](https://nopan.com/contact) — support@nopan.com
+- Backed by Newion, Crane, and Seedcamp (raised EUR 7.2M, 2026).

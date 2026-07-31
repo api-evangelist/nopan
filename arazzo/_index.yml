@@ -1,0 +1,12 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/nopan-openapi-original.yml
+workflows:
+  - file: nopan-accept-payment.yml
+    workflowId: acceptAndCapturePayment
+    title: Nopan — accept and capture a payment
+    summary: Authenticate, initiate a payment for SCA, finalize it, and capture funds.
+  - file: nopan-refund-payment.yml
+    workflowId: refundCapturedPayment
+    title: Nopan — refund a captured payment
+    summary: Authenticate, refund a previously captured payment, and confirm via events.

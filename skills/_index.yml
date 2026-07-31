@@ -1,0 +1,16 @@
+generated: '2026-07-20'
+method: generated
+source: openapi/nopan-openapi-original.yml
+skills:
+  - file: nopan-accept-a-payment.md
+    name: Accept an account or wallet payment with Nopan
+    api: openapi/nopan-openapi-original.yml
+    operations: [getAccessToken, initiatePayment, finalizePayment, capturePayment, getPaymentStatus]
+  - file: nopan-recurring-charge.md
+    name: Charge a stored credential (recurring / MIT) with Nopan
+    api: openapi/nopan-openapi-original.yml
+    operations: [getAccessToken, chargePayment, getPaymentStatus, searchReports, downloadReport]
+  - file: nopan-refund-a-payment.md
+    name: Refund or cancel a Nopan payment
+    api: openapi/nopan-openapi-original.yml
+    operations: [getAccessToken, cancelPayment, refundPayment, getPaymentStatus, getPaymentEvents]

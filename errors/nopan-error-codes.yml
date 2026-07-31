@@ -1,0 +1,83 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/nopan-openapi-original.yml
+format: nopan-status-envelope
+description: >-
+  Nopan returns a consistent error envelope on every operation. Errors are not
+  RFC 9457 problem+json; instead each response carries a transaction `status`
+  (ACCEPTED | PENDING | APPROVED | DECLINED | CANCELED), a `statusInfo` object
+  with a numeric `reasonCode` string and human `message`, a `callId` request
+  tracing identifier, and (on 400 validation) a `fields` map of field -> message.
+envelope:
+  status: enum(ACCEPTED, PENDING, APPROVED, DECLINED, CANCELED)
+  statusInfo:
+    reasonCode: string   # numeric code, see reason_codes[]
+    message: string      # human-readable status message
+  callId: string         # request tracing ID (echoed on every response)
+  fields: object         # optional map of field name -> validation message (400 only)
+reason_codes:
+  - code: '3000'
+    http_status: 429
+    title: Rate limit exceeded
+    remediation: Back off and retry after the rate-limit window; respect throttling.
+  - code: '4000'
+    http_status: 400
+    title: Validation failure / malformed payload
+    remediation: The payload was incomplete or failed schema validation. Check required fields and formats; inspect the `fields` map.
+  - code: '4061'
+    http_status: 401
+    title: Token is expired
+    remediation: Request a fresh OAuth2 access token via POST /auth/token.
+  - code: '4970'
+    http_status: 401
+    title: Authentication error
+    remediation: Unable to authorize; verify client credentials, mTLS client certificate, and Bearer token.
+  - code: '4971'
+    http_status: 403
+    title: 'Authorization error: Resource is not allowed'
+    remediation: The token lacks access to the requested resource; check granted scopes and processing-account permissions.
+  - code: '4980'
+    http_status: 400
+    title: Certificate error
+    remediation: The mTLS client certificate failed validation; check the certificate presented on the TLS handshake.
+  - code: '4990'
+    http_status: 400
+    title: Signature error
+    remediation: There was an error signing the request; verify the JWS signing procedure.
+  - code: '4992'
+    http_status: 401
+    title: Error validating the signature
+    remediation: The JWS signature could not be validated; verify the signing key and payload.
+  - code: '5000'
+    http_status: 404
+    title: Payment not found
+    remediation: No payment matches the supplied transactionId.
+  - code: '5001'
+    http_status: 409
+    title: Payment already exists
+    remediation: A payment with these parameters already exists; reuse the original result (see idempotency).
+  - code: '5002'
+    http_status: 422
+    title: Payment transition not allowed
+    remediation: The requested operation is not valid for the payment's current state.
+  - code: '5003'
+    http_status: 423
+    title: Payment is processing (locked)
+    remediation: The payment is currently processing; retry after a short delay.
+  - code: '8001'
+    http_status: 504
+    title: Provider timeout
+    remediation: The upstream payment provider did not respond in time; retry.
+  - code: '8003'
+    http_status: 501
+    title: Operation not supported
+    remediation: The operation is not supported by the selected payment provider.
+  - code: '8004'
+    http_status: 502
+    title: Provider error
+    remediation: Unable to reach the upstream payment provider; retry.
+  - code: '9999'
+    http_status: 500
+    title: Internal Server Error
+    remediation: An unexpected error occurred; contact support@nopan.com with the callId.
+docs: https://docs.nopan.com/guides/errors

@@ -1,0 +1,23 @@
+generated: '2026-07-20'
+method: searched
+source: openapi/nopan-openapi-original.yml
+docs: https://docs.nopan.com/guides/authentication
+description: >-
+  OAuth2 client_credentials scopes for the Nopan API. Scopes are requested as a
+  space-delimited `scope` form parameter on POST /auth/token; the default is
+  payments:read. Captured from the /auth/token operation in the OpenAPI definition.
+schemes:
+  - name: OAuth2ClientCredentials
+    source: openapi/nopan-openapi-original.yml
+    flows:
+      - flow: clientCredentials
+        tokenUrl: https://api.nopan.io/auth/token
+scopes:
+  - scope: payments:read
+    description: Read access to payments (default scope).
+    flows: [clientCredentials]
+    sources: [openapi/nopan-openapi-original.yml]
+  - scope: payments:process
+    description: Process/mutate payments (initiate, finalize, charge, capture, cancel, refund).
+    flows: [clientCredentials]
+    sources: [openapi/nopan-openapi-original.yml]

@@ -1,0 +1,32 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/nopan-openapi-original.yml
+description: >-
+  Cross-cutting standards conformance for the Nopan payments API, derived from the
+  OpenAPI definition and the developer guides, plus published regulatory posture.
+standards:
+  - id: oauth2
+    conforms: true
+    evidence: POST /auth/token issues OAuth2 client_credentials Bearer (JWT) tokens.
+  - id: mutual-tls
+    conforms: true
+    evidence: Machine-to-machine authentication uses mutual TLS; certificate errors surfaced (reasonCode 4980).
+  - id: jws-message-signing
+    conforms: true
+    evidence: Every request is signed with JWS; signature errors surfaced (reasonCode 4990/4992).
+  - id: psd2
+    conforms: true
+    evidence: Licensed Payment Institution (Dutch Central Bank / DNB); SCA flows built into payment lifecycle.
+  - id: sca-psd2-strong-customer-authentication
+    conforms: true
+    evidence: Payment initiate returns a redirect URL for the payer's SCA; PENDING state waits for SCA.
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: Errors use a custom status envelope (statusInfo.reasonCode/message + callId), not application/problem+json.
+  - id: idempotency
+    conforms: true
+    evidence: Idempotency-Key header on mutating operations, 24h retention (see conventions/).
+compliance:
+  regulated_entity: Payment Institution licensed by De Nederlandsche Bank (DNB)
+  frameworks: [PSD2, SCA, GDPR]
+  docs: https://nopan.com/about-us

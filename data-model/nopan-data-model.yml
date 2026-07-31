@@ -1,0 +1,57 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/nopan-openapi-original.yml
+description: >-
+  Entity-relationship graph derived from the Nopan OpenAPI operations and schemas
+  (com.nopan.api.gateway.domain.*). The Payment/transaction is the central entity;
+  operations transition it through the ACCEPTED -> PENDING -> APPROVED/DECLINED/CANCELED
+  lifecycle and produce capture/refund/report records.
+entities:
+  - name: Payment
+    id_field: transactionId
+    description: A payment transaction moving through the lifecycle statuses.
+    lifecycle: [ACCEPTED, PENDING, APPROVED, DECLINED, CANCELED]
+    operations: [initiatePayment, finalizePayment, chargePayment, capturePayment, cancelPayment, refundPayment, getPaymentStatus, getPaymentEvents]
+  - name: ProcessingAccount
+    id_field: processingAccountId
+    description: The organization/processing account that owns payments (client_id at onboarding).
+  - name: PaymentEvent
+    description: A state-transition record in a payment's timeline.
+    operations: [getPaymentEvents]
+  - name: Capture
+    description: Funds captured from a finalized payment.
+    operations: [capturePayment]
+  - name: Refund
+    description: A refund against a captured payment.
+    operations: [refundPayment]
+  - name: Report
+    id_field: reportId
+    description: A generated financial report (transaction detail, fees, settlement, bank addendum).
+    operations: [searchReports, downloadReport]
+  - name: Notification
+    description: Webhook notification emitted on payment lifecycle events.
+relationships:
+  - from: Payment
+    to: ProcessingAccount
+    type: belongs_to
+    via: processingAccountId
+  - from: Payment
+    to: PaymentEvent
+    type: has_many
+    via: transactionId
+  - from: Payment
+    to: Capture
+    type: has_many
+    via: transactionId
+  - from: Payment
+    to: Refund
+    type: has_many
+    via: transactionId
+  - from: Capture
+    to: Refund
+    type: has_many
+    via: transactionId
+  - from: Notification
+    to: Payment
+    type: belongs_to
+    via: transactionId

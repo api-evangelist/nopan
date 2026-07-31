@@ -1,0 +1,49 @@
+generated: '2026-07-20'
+method: derived
+status: candidate
+source: openapi/nopan-openapi-original.yml
+description: >-
+  Candidate MCP tool surface derived one-to-one from the Nopan OpenAPI operations.
+  Nopan publishes an "AI Skills" guide (https://docs.nopan.com/guides/ai-skills) but
+  no hosted/remote MCP server was found at enrichment time. This is a proposed tool
+  list, not an official server.
+server:
+  name: nopan
+  transport: http
+tools:
+  - name: get_access_token
+    description: Get an OAuth2 client_credentials access token.
+    source_operation: openapi/nopan-openapi-original.yml#getAccessToken
+  - name: initiate_payment
+    description: Start a new payment flow (returns a redirect URL for SCA).
+    source_operation: openapi/nopan-openapi-original.yml#initiatePayment
+  - name: finalize_payment
+    description: Finalize a two-step payment.
+    source_operation: openapi/nopan-openapi-original.yml#finalizePayment
+  - name: charge_payment
+    description: Trigger a recurring or token-based payment.
+    source_operation: openapi/nopan-openapi-original.yml#chargePayment
+  - name: capture_payment
+    description: Capture funds from a previously finalized payment.
+    source_operation: openapi/nopan-openapi-original.yml#capturePayment
+  - name: cancel_payment
+    description: Cancel an initiated but not yet captured payment.
+    source_operation: openapi/nopan-openapi-original.yml#cancelPayment
+  - name: refund_payment
+    description: Refund a previously captured payment.
+    source_operation: openapi/nopan-openapi-original.yml#refundPayment
+  - name: get_payment_status
+    description: Return the current status of a payment.
+    source_operation: openapi/nopan-openapi-original.yml#getPaymentStatus
+  - name: get_payment_events
+    description: Return a full timeline of a payment's state transitions.
+    source_operation: openapi/nopan-openapi-original.yml#getPaymentEvents
+  - name: mock_payment
+    description: Mock a payment flow in the sandbox.
+    source_operation: openapi/nopan-openapi-original.yml#mockPayment
+  - name: search_reports
+    description: Search for financial reports by date range.
+    source_operation: openapi/nopan-openapi-original.yml#searchReports
+  - name: download_report
+    description: Download a report file by its ID.
+    source_operation: openapi/nopan-openapi-original.yml#downloadReport

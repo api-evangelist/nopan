@@ -1,0 +1,29 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.nopan.com/guides/webhooks/webhook-types
+type: Webhooks
+description: >-
+  Nopan sends webhook notifications (configured in the Portal) for payment lifecycle
+  events. Notification receiver operations are defined in the OpenAPI under the
+  Webhooks tag. No standalone AsyncAPI document is published; this is the webhook
+  event catalog. Payloads are delivered as HTTP POST callbacks.
+docs:
+  types: https://docs.nopan.com/guides/webhooks/webhook-types
+  setup: https://docs.nopan.com/guides/webhooks/webhook-setup
+events:
+  - type: PAYMENT_INITIATE
+    description: Update on initiate payment.
+    receiver_operation: openapi/nopan-openapi-original.yml#initiateNotification
+    delivery: POST /notifications/paymentInitiate
+  - type: PAYMENT_FINALIZE
+    description: Payment finalize update. Used to receive user confirmation, expiration, etc.
+    receiver_operation: openapi/nopan-openapi-original.yml#finalizedNotification
+    delivery: POST /notifications/paymentFinalize
+  - type: PAYMENT_CAPTURE
+    description: Payment capture update. Used to receive confirmations, amount captured, etc.
+    receiver_operation: openapi/nopan-openapi-original.yml#captureNotification
+    delivery: POST /notifications/paymentCapture
+  - type: PAYMENT_REFUND
+    description: Payment refund update. Used to receive confirmations, amount refunded, etc.
+    receiver_operation: openapi/nopan-openapi-original.yml#refundNotification
+    delivery: POST /notifications/paymentRefund

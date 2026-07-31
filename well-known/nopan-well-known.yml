@@ -1,0 +1,26 @@
+generated: '2026-07-20'
+method: searched
+description: >-
+  Probe of /.well-known/ discovery endpoints across Nopan hosts. No documents were
+  found (absence is valid recorded data). The API host api.nopan.io requires mutual
+  TLS and refuses plain connections (HTTP 000), consistent with its mTLS auth model.
+hosts:
+  - host: https://api.nopan.io
+    note: mTLS required; plain HTTPS connections refused (HTTP 000).
+    documents:
+      - {path: /.well-known/security.txt, status: 000}
+      - {path: /.well-known/openid-configuration, status: 000}
+      - {path: /.well-known/oauth-authorization-server, status: 000}
+  - host: https://docs.nopan.com
+    documents:
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/openid-configuration, status: 404}
+      - {path: /.well-known/oauth-authorization-server, status: 404}
+      - {path: /.well-known/api-catalog, status: 404}
+      - {path: /.well-known/ai-plugin.json, status: 404}
+      - {path: /llms.txt, status: 404}
+  - host: https://nopan.com
+    documents:
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/openid-configuration, status: 404}
+      - {path: /.well-known/api-catalog, status: 404}

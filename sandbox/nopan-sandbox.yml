@@ -1,0 +1,34 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.nopan.com/guides/integration-walkthrough
+description: >-
+  Nopan ships a sandbox environment plus a mock endpoint that mirrors the live
+  endpoints so integrators can simulate payment flows without processing real
+  transactions. Outcomes for each lifecycle step are driven by the mock request
+  rather than by fixed magic card numbers. No public test card/account values were
+  fabricated; the mock request structure below is taken verbatim from the OpenAPI.
+environment:
+  sandbox: true
+  mock_endpoint:
+    operation: openapi/nopan-openapi-original.yml#mockPayment
+    method_path: POST /mock/set
+    description: Mocks a payment flow; predefines the outcome of each step.
+mock_request:
+  description: The mock request (MockRequest) keys a scenario and defines the outcome of each lifecycle step.
+  schema_refs:
+    - MockRequest
+    - MockRequest.Key
+    - MockRequest.Steps
+  steps:
+    - InitiateStep
+    - FinalizeStep
+    - CaptureStep
+    - ChargeStep
+    - RefundStep
+    - CancelStep
+notes:
+  - Testing APIs mirror live endpoints for integration testing, QA, and staging.
+  - Trigger SCA flows and verify callbacks using predefined test data configured via /mock/set.
+docs:
+  walkthrough: https://docs.nopan.com/guides/integration-walkthrough
+  testing_tag: Testing APIs (OpenAPI)

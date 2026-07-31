@@ -1,0 +1,36 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.nopan.com/guides/authentication
+docs: https://docs.nopan.com/guides/authentication
+description: >-
+  Nopan uses OAuth2 client_credentials machine-to-machine authentication layered
+  over mutual TLS (mTLS), with every request additionally signed using JWS. The
+  OpenAPI definition documents these in prose (tags and the /auth/token operation)
+  rather than a formal components.securitySchemes block, so this profile is captured
+  from the auth guide and the token operation.
+summary:
+  types: [oauth2, mutualTLS, http-bearer, jws-signing]
+  oauth2_flows: [clientCredentials]
+  api_key_in: []
+schemes:
+  - name: OAuth2ClientCredentials
+    type: oauth2
+    flow: clientCredentials
+    token_url: https://api.nopan.io/auth/token
+    grant_type: client_credentials
+    client_id: organization account ID issued at onboarding
+    token_type: Bearer (JWT, ES256)
+    default_scope: payments:read
+    scopes: [payments:read, payments:process]
+    source: openapi/nopan-openapi-original.yml#getAccessToken
+  - name: MutualTLS
+    type: mutualTLS
+    description: Client certificate required on the TLS handshake for all requests (mTLS).
+  - name: BearerToken
+    type: http
+    scheme: bearer
+    bearer_format: JWT
+    description: Access token from /auth/token presented as Authorization Bearer on protected resources.
+  - name: JWSRequestSigning
+    type: message-signature
+    description: Every request is signed with JWS (JSON Web Signature) and validated server-side.

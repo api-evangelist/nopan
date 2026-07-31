@@ -1,0 +1,41 @@
+arazzo: 1.0.1
+info:
+  title: Nopan — refund a captured payment
+  version: 1.0.0
+  summary: Authenticate, refund a previously captured payment, and confirm via events.
+sourceDescriptions:
+  - name: nopan
+    url: ../openapi/nopan-openapi-original.yml
+    type: openapi
+workflows:
+  - workflowId: refundCapturedPayment
+    summary: Get a token, refund a captured payment, and read the events timeline.
+    inputs:
+      type: object
+      properties:
+        client_id:
+          type: string
+        scope:
+          type: string
+          default: payments:process
+        transactionId:
+          type: string
+    steps:
+      - stepId: authenticate
+        operationId: getAccessToken
+        requestBody:
+          contentType: application/x-www-form-urlencoded
+          payload:
+            grant_type: client_credentials
+            client_id: $inputs.client_id
+            scope: $inputs.scope
+        outputs:
+          access_token: $response.body#/access_token
+      - stepId: refund
+        operationId: refundPayment
+      - stepId: events
+        operationId: getPaymentEvents
+        parameters:
+          - name: transactionId
+            in: path
+            value: $inputs.transactionId

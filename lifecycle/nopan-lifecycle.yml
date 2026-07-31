@@ -1,0 +1,18 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.nopan.com/guides/versioning
+description: >-
+  Lifecycle posture for the Nopan API captured from the developer guides. Nopan
+  publishes a versioning guide; no public status page, deprecation-policy page, or
+  SLA page was found at enrichment time.
+versioning:
+  scheme: uri-version
+  current: v1
+  docs: https://docs.nopan.com/guides/versioning
+deprecation:
+  policy_url: null
+  sunset_header: unknown
+sla:
+  url: null
+status_page: null
+deprecated_operations: []

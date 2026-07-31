@@ -1,0 +1,22 @@
+{
+  "provider": "nopan",
+  "sources": [
+    "nopan-authentication-apis-api-openapi.yml",
+    "nopan-payment-processing-apis-api-openapi.yml",
+    "nopan-reporting-apis-api-openapi.yml",
+    "nopan-testing-apis-api-openapi.yml",
+    "nopan-webhooks-api-openapi.yml"
+  ],
+  "outputs": [
+    "nopan-authentication-apis-api-openapi.yml",
+    "nopan-payment-processing-apis-api-openapi.yml",
+    "nopan-reporting-apis-api-openapi.yml",
+    "nopan-testing-apis-api-openapi.yml",
+    "nopan-webhooks-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
