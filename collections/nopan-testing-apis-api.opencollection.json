@@ -1,0 +1,33 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Nopan Authentication APIs Testing APIs API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Testing APIs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Mock payment flow",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.nopan.io/mock/set",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Mocks a payment flow. Mock will match requests using processingAccountId and key."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

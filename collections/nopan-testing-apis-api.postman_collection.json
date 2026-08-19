@@ -1,0 +1,647 @@
+{
+  "item": [
+    {
+      "id": "e18ae607-164c-43fe-be0a-deac9fbee207",
+      "name": "Testing APIs",
+      "description": {
+        "content": "The Nopan API includes a sandbox environment and test endpoints to help developers safely simulate, mock and validate payment flows without processing real transactions. These testing APIs mirror the behavior of the live endpoints, allowing you to initiate payments, trigger SCA flows, and verify callbacks using predefined test data. This environment is ideal for integration testing, QA workflows, and development staging before going live.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "95cfaaef-3c95-4f4e-9efc-58794374172c",
+          "name": "Mock payment flow",
+          "request": {
+            "name": "Mock payment flow",
+            "description": {
+              "content": "Mocks a payment flow. Mock will match requests using processingAccountId and key.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "mock",
+                "set"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": {\n    \"type\": \"<string>\",\n    \"value\": \"<string>\"\n  },\n  \"processingAccountId\": \"<string>\",\n  \"type\": \"<string>\",\n  \"oneTime\": \"<boolean>\",\n  \"steps\": {\n    \"initiateStep\": {\n      \"providerDetails\": {\n        \"providerTransactionId\": \"<string>\",\n        \"redirectUrl\": \"<string>\",\n        \"registeredAt\": \"<dateTime>\",\n        \"expiresAt\": \"<dateTime>\",\n        \"qrCode\": \"<string>\"\n      },\n      \"status\": \"<string>\",\n      \"statusInfo\": {\n        \"reasonCode\": \"<string>\",\n        \"message\": \"<string>\"\n      }\n    },\n    \"finalizeStep\": {\n      \"providerDetails\": {\n        \"providerTransactionId\": \"<string>\",\n        \"registeredAt\": \"<dateTime>\",\n        \"expiresAt\": \"<dateTime>\"\n      },\n      \"status\": \"<string>\",\n      \"statusInfo\": {\n        \"reasonCode\": \"<string>\",\n        \"message\": \"<string>\"\n      }\n    },\n    \"captureStep\": {\n      \"status\": \"<string>\",\n      \"providerDetails\": {\n        \"providerTransactionId\": \"<string>\",\n        \"registeredAt\": \"<dateTime>\"\n      },\n      \"statusInfo\": {\n        \"reasonCode\": \"<string>\",\n        \"message\": \"<string>\"\n      }\n    },\n    \"cancelStep\": {\n      \"status\": \"<string>\",\n      \"statusInfo\": {\n        \"reasonCode\": \"<string>\",\n        \"message\": \"<string>\"\n      }\n    },\n    \"refundStep\": {\n      \"status\": \"<string>\",\n      \"providerDetails\": {\n        \"providerTransactionId\": \"<string>\",\n        \"registeredAt\": \"<dateTime>\"\n      },\n      \"statusInfo\": {\n        \"reasonCode\": \"<string>\",\n        \"message\": \"<string>\"\n      }\n    },\n    \"chargeStep\": {\n      \"status\": \"<string>\",\n      \"providerDetails\": {\n        \"providerTransactionId\": \"<string>\",\n        \"registeredAt\": \"<dateTime>\"\n      },\n      \"statusInfo\": {\n        \"reasonCode\": \"<string>\",\n        \"message\": \"<string>\"\n      }\n    }\n  },\n  \"scenario\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f727baa9-b4da-4f8f-bf83-a657657a8ed1",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "mock",
+                    "set"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processingAccountId\": \"merchant-1234\",\n  \"key\": {\n    \"type\": \"CLIENT_TRANSACTION_ID\",\n    \"value\": \"client-txn-54c8c9bc\"\n  },\n  \"type\": \"MOCK\",\n  \"oneTime\": false,\n  \"steps\": {\n    \"initiate\": {\n      \"clientTransactionId\": \"client-txn-54c8c9bc\",\n      \"status\": \"ACCEPTED\",\n      \"providerDetails\": {\n        \"providerTransactionId\": \"9c82132e-eb2a-491c-970d-47260d4122b0\",\n        \"redirectUrl\": \"https://merchant.callback.com\",\n        \"registeredAt\": 1748505211886,\n        \"expiresAt\": 1748505271887\n      },\n      \"statusInfo\": {\n        \"reasonCode\": \"-1\",\n        \"message\": \"Awaiting user consent\"\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "961bac8e-d75b-47c0-9bca-d3ee3fa6942b",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "mock",
+                    "set"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processingAccountId\": \"merchant-1234\",\n  \"key\": {\n    \"type\": \"CLIENT_TRANSACTION_ID\",\n    \"value\": \"client-txn-54c8c9bc\"\n  },\n  \"type\": \"MOCK\",\n  \"oneTime\": false,\n  \"steps\": {\n    \"initiate\": {\n      \"clientTransactionId\": \"client-txn-54c8c9bc\",\n      \"status\": \"ACCEPTED\",\n      \"providerDetails\": {\n        \"providerTransactionId\": \"9c82132e-eb2a-491c-970d-47260d4122b0\",\n        \"redirectUrl\": \"https://merchant.callback.com\",\n        \"registeredAt\": 1748505211886,\n        \"expiresAt\": 1748505271887\n      },\n      \"statusInfo\": {\n        \"reasonCode\": \"-1\",\n        \"message\": \"Awaiting user consent\"\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"DECLINED\",\n  \"statusInfo\": {\n    \"reasonCode\": \"4000\",\n    \"message\": \"The payload was incomplete or didn't pass schema validation. Check required fields and formats.\"\n  },\n  \"callId\": \"a3c8cdef0a134df4-2e31b1\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9810abcf-4d37-45de-ae49-a09bc0515f16",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "mock",
+                    "set"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processingAccountId\": \"merchant-1234\",\n  \"key\": {\n    \"type\": \"CLIENT_TRANSACTION_ID\",\n    \"value\": \"client-txn-54c8c9bc\"\n  },\n  \"type\": \"MOCK\",\n  \"oneTime\": false,\n  \"steps\": {\n    \"initiate\": {\n      \"clientTransactionId\": \"client-txn-54c8c9bc\",\n      \"status\": \"ACCEPTED\",\n      \"providerDetails\": {\n        \"providerTransactionId\": \"9c82132e-eb2a-491c-970d-47260d4122b0\",\n        \"redirectUrl\": \"https://merchant.callback.com\",\n        \"registeredAt\": 1748505211886,\n        \"expiresAt\": 1748505271887\n      },\n      \"statusInfo\": {\n        \"reasonCode\": \"-1\",\n        \"message\": \"Awaiting user consent\"\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"statusInfo\": {\n    \"reasonCode\": \"<string>\",\n    \"message\": \"<string>\"\n  },\n  \"callId\": \"string\",\n  \"status\": \"CANCELED\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2075baf2-a57a-481b-b7e7-5980d3772e65",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "mock",
+                    "set"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processingAccountId\": \"merchant-1234\",\n  \"key\": {\n    \"type\": \"CLIENT_TRANSACTION_ID\",\n    \"value\": \"client-txn-54c8c9bc\"\n  },\n  \"type\": \"MOCK\",\n  \"oneTime\": false,\n  \"steps\": {\n    \"initiate\": {\n      \"clientTransactionId\": \"client-txn-54c8c9bc\",\n      \"status\": \"ACCEPTED\",\n      \"providerDetails\": {\n        \"providerTransactionId\": \"9c82132e-eb2a-491c-970d-47260d4122b0\",\n        \"redirectUrl\": \"https://merchant.callback.com\",\n        \"registeredAt\": 1748505211886,\n        \"expiresAt\": 1748505271887\n      },\n      \"statusInfo\": {\n        \"reasonCode\": \"-1\",\n        \"message\": \"Awaiting user consent\"\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"statusInfo\": {\n    \"reasonCode\": \"<string>\",\n    \"message\": \"<string>\"\n  },\n  \"callId\": \"string\",\n  \"status\": \"CANCELED\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "202c5839-30ef-4569-97bc-5643af986c21",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "mock",
+                    "set"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processingAccountId\": \"merchant-1234\",\n  \"key\": {\n    \"type\": \"CLIENT_TRANSACTION_ID\",\n    \"value\": \"client-txn-54c8c9bc\"\n  },\n  \"type\": \"MOCK\",\n  \"oneTime\": false,\n  \"steps\": {\n    \"initiate\": {\n      \"clientTransactionId\": \"client-txn-54c8c9bc\",\n      \"status\": \"ACCEPTED\",\n      \"providerDetails\": {\n        \"providerTransactionId\": \"9c82132e-eb2a-491c-970d-47260d4122b0\",\n        \"redirectUrl\": \"https://merchant.callback.com\",\n        \"registeredAt\": 1748505211886,\n        \"expiresAt\": 1748505271887\n      },\n      \"statusInfo\": {\n        \"reasonCode\": \"-1\",\n        \"message\": \"Awaiting user consent\"\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"statusInfo\": {\n    \"reasonCode\": \"<string>\",\n    \"message\": \"<string>\"\n  },\n  \"callId\": \"string\",\n  \"status\": \"CANCELED\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d28aa2e8-afe2-4e6f-8634-ffe5cfee8a2b",
+              "name": "Conflict",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "mock",
+                    "set"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processingAccountId\": \"merchant-1234\",\n  \"key\": {\n    \"type\": \"CLIENT_TRANSACTION_ID\",\n    \"value\": \"client-txn-54c8c9bc\"\n  },\n  \"type\": \"MOCK\",\n  \"oneTime\": false,\n  \"steps\": {\n    \"initiate\": {\n      \"clientTransactionId\": \"client-txn-54c8c9bc\",\n      \"status\": \"ACCEPTED\",\n      \"providerDetails\": {\n        \"providerTransactionId\": \"9c82132e-eb2a-491c-970d-47260d4122b0\",\n        \"redirectUrl\": \"https://merchant.callback.com\",\n        \"registeredAt\": 1748505211886,\n        \"expiresAt\": 1748505271887\n      },\n      \"statusInfo\": {\n        \"reasonCode\": \"-1\",\n        \"message\": \"Awaiting user consent\"\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"statusInfo\": {\n    \"reasonCode\": \"<string>\",\n    \"message\": \"<string>\"\n  },\n  \"callId\": \"string\",\n  \"status\": \"CANCELED\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d7471856-67f8-421c-a545-5f7812f908ca",
+              "name": "Unprocessable Content",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "mock",
+                    "set"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processingAccountId\": \"merchant-1234\",\n  \"key\": {\n    \"type\": \"CLIENT_TRANSACTION_ID\",\n    \"value\": \"client-txn-54c8c9bc\"\n  },\n  \"type\": \"MOCK\",\n  \"oneTime\": false,\n  \"steps\": {\n    \"initiate\": {\n      \"clientTransactionId\": \"client-txn-54c8c9bc\",\n      \"status\": \"ACCEPTED\",\n      \"providerDetails\": {\n        \"providerTransactionId\": \"9c82132e-eb2a-491c-970d-47260d4122b0\",\n        \"redirectUrl\": \"https://merchant.callback.com\",\n        \"registeredAt\": 1748505211886,\n        \"expiresAt\": 1748505271887\n      },\n      \"statusInfo\": {\n        \"reasonCode\": \"-1\",\n        \"message\": \"Awaiting user consent\"\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"statusInfo\": {\n    \"reasonCode\": \"<string>\",\n    \"message\": \"<string>\"\n  },\n  \"callId\": \"string\",\n  \"status\": \"CANCELED\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "44b3a9af-6a6e-4f56-986c-3bc245198de4",
+              "name": "Locked",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "mock",
+                    "set"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processingAccountId\": \"merchant-1234\",\n  \"key\": {\n    \"type\": \"CLIENT_TRANSACTION_ID\",\n    \"value\": \"client-txn-54c8c9bc\"\n  },\n  \"type\": \"MOCK\",\n  \"oneTime\": false,\n  \"steps\": {\n    \"initiate\": {\n      \"clientTransactionId\": \"client-txn-54c8c9bc\",\n      \"status\": \"ACCEPTED\",\n      \"providerDetails\": {\n        \"providerTransactionId\": \"9c82132e-eb2a-491c-970d-47260d4122b0\",\n        \"redirectUrl\": \"https://merchant.callback.com\",\n        \"registeredAt\": 1748505211886,\n        \"expiresAt\": 1748505271887\n      },\n      \"statusInfo\": {\n        \"reasonCode\": \"-1\",\n        \"message\": \"Awaiting user consent\"\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Locked (WebDAV) (RFC 4918)",
+              "code": 423,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"statusInfo\": {\n    \"reasonCode\": \"<string>\",\n    \"message\": \"<string>\"\n  },\n  \"callId\": \"string\",\n  \"status\": \"CANCELED\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cf6de555-2044-4db7-a405-13207bac78b0",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "mock",
+                    "set"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processingAccountId\": \"merchant-1234\",\n  \"key\": {\n    \"type\": \"CLIENT_TRANSACTION_ID\",\n    \"value\": \"client-txn-54c8c9bc\"\n  },\n  \"type\": \"MOCK\",\n  \"oneTime\": false,\n  \"steps\": {\n    \"initiate\": {\n      \"clientTransactionId\": \"client-txn-54c8c9bc\",\n      \"status\": \"ACCEPTED\",\n      \"providerDetails\": {\n        \"providerTransactionId\": \"9c82132e-eb2a-491c-970d-47260d4122b0\",\n        \"redirectUrl\": \"https://merchant.callback.com\",\n        \"registeredAt\": 1748505211886,\n        \"expiresAt\": 1748505271887\n      },\n      \"statusInfo\": {\n        \"reasonCode\": \"-1\",\n        \"message\": \"Awaiting user consent\"\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"statusInfo\": {\n    \"reasonCode\": \"<string>\",\n    \"message\": \"<string>\"\n  },\n  \"callId\": \"string\",\n  \"status\": \"CANCELED\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a895d63a-a23d-4043-971c-b992618b86f7",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "mock",
+                    "set"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processingAccountId\": \"merchant-1234\",\n  \"key\": {\n    \"type\": \"CLIENT_TRANSACTION_ID\",\n    \"value\": \"client-txn-54c8c9bc\"\n  },\n  \"type\": \"MOCK\",\n  \"oneTime\": false,\n  \"steps\": {\n    \"initiate\": {\n      \"clientTransactionId\": \"client-txn-54c8c9bc\",\n      \"status\": \"ACCEPTED\",\n      \"providerDetails\": {\n        \"providerTransactionId\": \"9c82132e-eb2a-491c-970d-47260d4122b0\",\n        \"redirectUrl\": \"https://merchant.callback.com\",\n        \"registeredAt\": 1748505211886,\n        \"expiresAt\": 1748505271887\n      },\n      \"statusInfo\": {\n        \"reasonCode\": \"-1\",\n        \"message\": \"Awaiting user consent\"\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"statusInfo\": {\n    \"reasonCode\": \"<string>\",\n    \"message\": \"<string>\"\n  },\n  \"callId\": \"string\",\n  \"status\": \"CANCELED\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ae8ed931-7733-4ae7-a1f6-adddc62e231f",
+              "name": "Not Implemented",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "mock",
+                    "set"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processingAccountId\": \"merchant-1234\",\n  \"key\": {\n    \"type\": \"CLIENT_TRANSACTION_ID\",\n    \"value\": \"client-txn-54c8c9bc\"\n  },\n  \"type\": \"MOCK\",\n  \"oneTime\": false,\n  \"steps\": {\n    \"initiate\": {\n      \"clientTransactionId\": \"client-txn-54c8c9bc\",\n      \"status\": \"ACCEPTED\",\n      \"providerDetails\": {\n        \"providerTransactionId\": \"9c82132e-eb2a-491c-970d-47260d4122b0\",\n        \"redirectUrl\": \"https://merchant.callback.com\",\n        \"registeredAt\": 1748505211886,\n        \"expiresAt\": 1748505271887\n      },\n      \"statusInfo\": {\n        \"reasonCode\": \"-1\",\n        \"message\": \"Awaiting user consent\"\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Implemented",
+              "code": 501,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"statusInfo\": {\n    \"reasonCode\": \"<string>\",\n    \"message\": \"<string>\"\n  },\n  \"callId\": \"string\",\n  \"status\": \"CANCELED\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "faa9c638-c06d-4f4c-b8e3-eae4340ff4f9",
+              "name": "Bad Gateway",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "mock",
+                    "set"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processingAccountId\": \"merchant-1234\",\n  \"key\": {\n    \"type\": \"CLIENT_TRANSACTION_ID\",\n    \"value\": \"client-txn-54c8c9bc\"\n  },\n  \"type\": \"MOCK\",\n  \"oneTime\": false,\n  \"steps\": {\n    \"initiate\": {\n      \"clientTransactionId\": \"client-txn-54c8c9bc\",\n      \"status\": \"ACCEPTED\",\n      \"providerDetails\": {\n        \"providerTransactionId\": \"9c82132e-eb2a-491c-970d-47260d4122b0\",\n        \"redirectUrl\": \"https://merchant.callback.com\",\n        \"registeredAt\": 1748505211886,\n        \"expiresAt\": 1748505271887\n      },\n      \"statusInfo\": {\n        \"reasonCode\": \"-1\",\n        \"message\": \"Awaiting user consent\"\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Gateway",
+              "code": 502,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"statusInfo\": {\n    \"reasonCode\": \"<string>\",\n    \"message\": \"<string>\"\n  },\n  \"callId\": \"string\",\n  \"status\": \"CANCELED\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6b91b53d-7b06-4b02-b83f-0e48732ab55b",
+              "name": "Gateway Timeout",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "mock",
+                    "set"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"processingAccountId\": \"merchant-1234\",\n  \"key\": {\n    \"type\": \"CLIENT_TRANSACTION_ID\",\n    \"value\": \"client-txn-54c8c9bc\"\n  },\n  \"type\": \"MOCK\",\n  \"oneTime\": false,\n  \"steps\": {\n    \"initiate\": {\n      \"clientTransactionId\": \"client-txn-54c8c9bc\",\n      \"status\": \"ACCEPTED\",\n      \"providerDetails\": {\n        \"providerTransactionId\": \"9c82132e-eb2a-491c-970d-47260d4122b0\",\n        \"redirectUrl\": \"https://merchant.callback.com\",\n        \"registeredAt\": 1748505211886,\n        \"expiresAt\": 1748505271887\n      },\n      \"statusInfo\": {\n        \"reasonCode\": \"-1\",\n        \"message\": \"Awaiting user consent\"\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"statusInfo\": {\n    \"reasonCode\": \"<string>\",\n    \"message\": \"<string>\"\n  },\n  \"callId\": \"string\",\n  \"status\": \"CANCELED\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.nopan.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "12126a3f-945a-436f-9a08-6665c7533cec",
+    "name": "Nopan Authentication APIs Testing APIs API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Download Nopan Postman collection: [Download](/postman/nopan-api-collection.zip)",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Nopan Authentication APIs Payment Processing APIs API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payment Processing APIs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Initiate payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.nopan.io/payments/initiate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Starts a new payment flow. The client provides payment details, and the response includes a redirect URL for the payer's SCA."
+        },
+        {
+          "info": {
+            "name": "Finalize payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.nopan.io/payments/finalize",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Finalizes a two-step payment, optionally capturing funds if configured. For one-step payments, it serves as the merchant's acknowledgement."
+        },
+        {
+          "info": {
+            "name": "Charge payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.nopan.io/payments/charge",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Triggers a recurring or token-based payment without user interaction in one step."
+        },
+        {
+          "info": {
+            "name": "Capture payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.nopan.io/payments/capture",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Captures funds from a previously finalized payment without auto capture. Enables delayed capture scenarios for clients who prefer control over timing"
+        },
+        {
+          "info": {
+            "name": "Cancel payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.nopan.io/payments/cancel",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Cancels an initiated but not yet captured payment. Prevents future fund movements."
+        },
+        {
+          "info": {
+            "name": "Refund payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.nopan.io/payments/refund",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Refunds a previously captured payment, either fully or partially. Used to reverse a transaction after funds have already been settled."
+        },
+        {
+          "info": {
+            "name": "Payment status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.nopan.io/payments/:transactionId/status",
+            "params": [
+              {
+                "name": "transactionId",
+                "value": "",
+                "type": "path",
+                "description": "Nopan's transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>"
+              }
+            ]
+          },
+          "docs": "Returns the current status of a payment"
+        },
+        {
+          "info": {
+            "name": "Payment events",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.nopan.io/payments/:transactionId/events",
+            "params": [
+              {
+                "name": "transactionId",
+                "value": "",
+                "type": "path",
+                "description": "Nopan's transaction ID<br/><small>Example: <i>ee2anef9bt</i></small>"
+              }
+            ]
+          },
+          "docs": "Returns a full timeline of state transitions and system events for a given payment"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

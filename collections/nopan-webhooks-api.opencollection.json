@@ -1,0 +1,78 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Nopan Authentication APIs Webhooks API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Webhooks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Payment initiate notification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.nopan.io/notifications/paymentInitiate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Notifies you about updates on initiate. The exact path of the request is configured through our portal."
+        },
+        {
+          "info": {
+            "name": "Payment finalize notification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.nopan.io/notifications/paymentFinalize",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Notifies you about updates on finalize. The exact path of the request is configured through our portal."
+        },
+        {
+          "info": {
+            "name": "Payment capture notification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.nopan.io/notifications/paymentCapture",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Notifies you about updates on capture. The exact path of the request is configured through our portal."
+        },
+        {
+          "info": {
+            "name": "Payment refund notification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.nopan.io/notifications/paymentRefund",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Notifies you about updates on refund. The exact path of the request is configured through our portal."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

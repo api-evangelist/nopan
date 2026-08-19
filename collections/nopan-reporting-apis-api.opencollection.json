@@ -1,0 +1,110 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Nopan Authentication APIs Reporting APIs API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Reporting APIs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search reports",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.nopan.io/reports",
+            "params": [
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Start of the date range filter<br/><small>Example: <i>2025-01-01T00:00:00Z</i></small>"
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "End of the date range filter<br/><small>Example: <i>2025-01-31T23:59:59Z</i></small>"
+              },
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "query",
+                "description": "The organization ID<br/><small>Example: <i>org-1234</i></small>"
+              },
+              {
+                "name": "contractualEntityId",
+                "value": "",
+                "type": "query",
+                "description": "The contractual entity ID associated with the organization<br/><small>Example: <i>entity-5678</i></small>"
+              },
+              {
+                "name": "processingAccountId",
+                "value": "",
+                "type": "query",
+                "description": "Unique identifier of the processing account under which the payment is processed.<br/><small>Example: <i>pa-1234</i></small>"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "The report file name<br/><small>Example: <i>TRANSACTION_DETAILS_merchant-123_550e8400-e29b-41d4-a716-446655440000_20260101</i></small>"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Filter results by report type"
+              }
+            ]
+          },
+          "docs": "Search for financial reports by date range, organization, or processing account."
+        },
+        {
+          "info": {
+            "name": "Download report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.nopan.io/reports/download",
+            "params": [
+              {
+                "name": "reportId",
+                "value": "",
+                "type": "query",
+                "description": "Unique identifier of the report. Must be a valid UUID.<br/><small>Example: <i>550e8400-e29b-41d4-a716-446655440000</i></small>"
+              },
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "query",
+                "description": "The organization ID<br/><small>Example: <i>org-1234</i></small>"
+              },
+              {
+                "name": "contractualEntityId",
+                "value": "",
+                "type": "query",
+                "description": "The contractual entity ID associated with the organization<br/><small>Example: <i>entity-5678</i></small>"
+              },
+              {
+                "name": "processingAccountId",
+                "value": "",
+                "type": "query",
+                "description": "Unique identifier of the processing account under which the payment is processed.<br/><small>Example: <i>pa-1234</i></small>"
+              }
+            ]
+          },
+          "docs": "Download a report file by its ID."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

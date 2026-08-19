@@ -1,0 +1,1460 @@
+{
+  "item": [
+    {
+      "id": "3a2f610a-fb85-4dbe-824b-d5746d5e1058",
+      "name": "Authentication APIs",
+      "description": {
+        "content": "This section covers the endpoints required for securely obtaining OAuth 2.0 access tokens to interact with the Nopan API. These APIs support machine-to-machine (M2M) authentication using mutual TLS (mTLS) and client credentials. A valid access token is required to authorize all subsequent requests to protected resources.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "246416b3-4130-4f2b-83fc-35b292c897ba",
+          "name": "Get access token",
+          "request": {
+            "name": "Get access token",
+            "description": {
+              "content": "Get an access token via OAuth2",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "auth",
+                "token"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "disabled": false,
+                  "key": "grant_type",
+                  "value": "<string>",
+                  "description": "(Required) OAuth2 grant type. Must be set to <code>client_credentials</code> to indicate machine-to-machine authentication using client credentials.<br/><small>Example: <i>client_credentials</i></small>"
+                },
+                {
+                  "disabled": false,
+                  "key": "client_id",
+                  "value": "<string>",
+                  "description": "(Required) The organization account ID provided at onboarding.<br/><small>Example: <i>merchant-abc123</i></small>"
+                },
+                {
+                  "disabled": false,
+                  "key": "scope",
+                  "value": "<string>",
+                  "description": "Optional space-delimited list of scopes the client is requesting access to. Used to limit the access token's permissions. Default is <code>payments:read</code><br/><small>Example: <i>payments:read payments:process</i></small>"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e5508f7c-f42c-48f4-87a0-cfb764647d13",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "auth",
+                    "token"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "0",
+                      "value": "g"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "1",
+                      "value": "r"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "2",
+                      "value": "a"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "3",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "4",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "5",
+                      "value": "_"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "6",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "7",
+                      "value": "y"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "8",
+                      "value": "p"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "9",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "10",
+                      "value": "="
+                    },
+                    {
+                      "disabled": false,
+                      "key": "11",
+                      "value": "c"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "12",
+                      "value": "l"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "13",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "14",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "15",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "16",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "17",
+                      "value": "_"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "18",
+                      "value": "c"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "19",
+                      "value": "r"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "20",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "21",
+                      "value": "d"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "22",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "23",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "24",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "25",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "26",
+                      "value": "a"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "27",
+                      "value": "l"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "28",
+                      "value": "s"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "29",
+                      "value": "&"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "30",
+                      "value": "c"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "31",
+                      "value": "l"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "32",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "33",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "34",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "35",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "36",
+                      "value": "_"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "37",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "38",
+                      "value": "d"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "39",
+                      "value": "="
+                    },
+                    {
+                      "disabled": false,
+                      "key": "40",
+                      "value": "y"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "41",
+                      "value": "o"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "42",
+                      "value": "u"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "43",
+                      "value": "r"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "44",
+                      "value": "-"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "45",
+                      "value": "o"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "46",
+                      "value": "r"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "47",
+                      "value": "g"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "48",
+                      "value": "a"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "49",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "50",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "51",
+                      "value": "z"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "52",
+                      "value": "a"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "53",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "54",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "55",
+                      "value": "o"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "56",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "57",
+                      "value": "-"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "58",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "59",
+                      "value": "d"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "60",
+                      "value": "&"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "61",
+                      "value": "s"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "62",
+                      "value": "c"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "63",
+                      "value": "o"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "64",
+                      "value": "p"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "65",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "66",
+                      "value": "="
+                    },
+                    {
+                      "disabled": false,
+                      "key": "67",
+                      "value": "p"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "68",
+                      "value": "a"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "69",
+                      "value": "y"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "70",
+                      "value": "m"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "71",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "72",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "73",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "74",
+                      "value": "s"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "75",
+                      "value": ":"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "76",
+                      "value": "p"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "77",
+                      "value": "r"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "78",
+                      "value": "o"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "79",
+                      "value": "c"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "80",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "81",
+                      "value": "s"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "82",
+                      "value": "s"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"access_token\": \"header.payload.signature\",\n  \"expires_in\": 7200,\n  \"refresh_expires_in\": 0,\n  \"token_type\": \"Bearer\",\n  \"not-before-policy\": 0,\n  \"scope\": \"payments:read\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "747940b4-fe51-4321-b178-3b2f536ad3a8",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "auth",
+                    "token"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "0",
+                      "value": "g"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "1",
+                      "value": "r"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "2",
+                      "value": "a"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "3",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "4",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "5",
+                      "value": "_"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "6",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "7",
+                      "value": "y"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "8",
+                      "value": "p"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "9",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "10",
+                      "value": "="
+                    },
+                    {
+                      "disabled": false,
+                      "key": "11",
+                      "value": "c"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "12",
+                      "value": "l"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "13",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "14",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "15",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "16",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "17",
+                      "value": "_"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "18",
+                      "value": "c"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "19",
+                      "value": "r"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "20",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "21",
+                      "value": "d"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "22",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "23",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "24",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "25",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "26",
+                      "value": "a"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "27",
+                      "value": "l"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "28",
+                      "value": "s"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "29",
+                      "value": "&"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "30",
+                      "value": "c"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "31",
+                      "value": "l"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "32",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "33",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "34",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "35",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "36",
+                      "value": "_"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "37",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "38",
+                      "value": "d"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "39",
+                      "value": "="
+                    },
+                    {
+                      "disabled": false,
+                      "key": "40",
+                      "value": "y"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "41",
+                      "value": "o"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "42",
+                      "value": "u"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "43",
+                      "value": "r"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "44",
+                      "value": "-"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "45",
+                      "value": "o"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "46",
+                      "value": "r"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "47",
+                      "value": "g"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "48",
+                      "value": "a"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "49",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "50",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "51",
+                      "value": "z"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "52",
+                      "value": "a"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "53",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "54",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "55",
+                      "value": "o"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "56",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "57",
+                      "value": "-"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "58",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "59",
+                      "value": "d"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "60",
+                      "value": "&"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "61",
+                      "value": "s"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "62",
+                      "value": "c"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "63",
+                      "value": "o"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "64",
+                      "value": "p"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "65",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "66",
+                      "value": "="
+                    },
+                    {
+                      "disabled": false,
+                      "key": "67",
+                      "value": "p"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "68",
+                      "value": "a"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "69",
+                      "value": "y"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "70",
+                      "value": "m"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "71",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "72",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "73",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "74",
+                      "value": "s"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "75",
+                      "value": ":"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "76",
+                      "value": "p"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "77",
+                      "value": "r"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "78",
+                      "value": "o"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "79",
+                      "value": "c"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "80",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "81",
+                      "value": "s"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "82",
+                      "value": "s"
+                    }
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"DECLINED\",\n  \"statusInfo\": {\n    \"reasonCode\": \"4980\",\n    \"message\": \"Certificate error\"\n  },\n  \"callId\": \"dccdf12110264f4c-a19b2c\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0a5f82d3-a45c-4f19-86af-39ffba7a5c77",
+              "name": "Forbidden error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "auth",
+                    "token"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "key": "0",
+                      "value": "g"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "1",
+                      "value": "r"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "2",
+                      "value": "a"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "3",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "4",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "5",
+                      "value": "_"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "6",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "7",
+                      "value": "y"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "8",
+                      "value": "p"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "9",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "10",
+                      "value": "="
+                    },
+                    {
+                      "disabled": false,
+                      "key": "11",
+                      "value": "c"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "12",
+                      "value": "l"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "13",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "14",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "15",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "16",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "17",
+                      "value": "_"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "18",
+                      "value": "c"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "19",
+                      "value": "r"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "20",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "21",
+                      "value": "d"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "22",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "23",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "24",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "25",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "26",
+                      "value": "a"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "27",
+                      "value": "l"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "28",
+                      "value": "s"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "29",
+                      "value": "&"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "30",
+                      "value": "c"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "31",
+                      "value": "l"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "32",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "33",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "34",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "35",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "36",
+                      "value": "_"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "37",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "38",
+                      "value": "d"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "39",
+                      "value": "="
+                    },
+                    {
+                      "disabled": false,
+                      "key": "40",
+                      "value": "y"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "41",
+                      "value": "o"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "42",
+                      "value": "u"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "43",
+                      "value": "r"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "44",
+                      "value": "-"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "45",
+                      "value": "o"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "46",
+                      "value": "r"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "47",
+                      "value": "g"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "48",
+                      "value": "a"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "49",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "50",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "51",
+                      "value": "z"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "52",
+                      "value": "a"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "53",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "54",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "55",
+                      "value": "o"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "56",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "57",
+                      "value": "-"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "58",
+                      "value": "i"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "59",
+                      "value": "d"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "60",
+                      "value": "&"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "61",
+                      "value": "s"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "62",
+                      "value": "c"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "63",
+                      "value": "o"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "64",
+                      "value": "p"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "65",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "66",
+                      "value": "="
+                    },
+                    {
+                      "disabled": false,
+                      "key": "67",
+                      "value": "p"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "68",
+                      "value": "a"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "69",
+                      "value": "y"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "70",
+                      "value": "m"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "71",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "72",
+                      "value": "n"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "73",
+                      "value": "t"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "74",
+                      "value": "s"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "75",
+                      "value": ":"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "76",
+                      "value": "p"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "77",
+                      "value": "r"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "78",
+                      "value": "o"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "79",
+                      "value": "c"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "80",
+                      "value": "e"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "81",
+                      "value": "s"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "82",
+                      "value": "s"
+                    }
+                  ]
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"DECLINED\",\n  \"statusInfo\": {\n    \"reasonCode\": \"4971\",\n    \"message\": \"Authorization error: Resource is not allowed\"\n  },\n  \"callId\": \"0dbad1cf74de4f76-31bc1e\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.nopan.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "01d50dc7-9644-415d-bc17-6e7cf7a93785",
+    "name": "Nopan Authentication APIs API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Download Nopan Postman collection: [Download](/postman/nopan-api-collection.zip)",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,364 @@
+{
+  "item": [
+    {
+      "id": "bedf55d4-7a5a-4115-8244-4f879d4b525f",
+      "name": "Webhooks",
+      "description": {
+        "content": "API of the webhooks notifications Nopan will send if configured in the portal.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f11e3a28-639e-4b92-8308-9ecebecac4c8",
+          "name": "Payment initiate notification",
+          "request": {
+            "name": "Payment initiate notification",
+            "description": {
+              "content": "Notifies you about updates on initiate. The exact path of the request is configured through our portal.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "notifications",
+                "paymentInitiate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notificationId\": \"<uuid>\",\n  \"transactionId\": \"<string>\",\n  \"clientTransactionId\": \"<string>\",\n  \"status\": \"<string>\",\n  \"statusInfo\": {\n    \"reasonCode\": \"<string>\",\n    \"message\": \"<string>\"\n  },\n  \"notificationType\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8f23cae7-9e87-4e44-b499-22e35e4e2adf",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "notifications",
+                    "paymentInitiate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"notificationId\": \"fc5adbcd-5f08-4d09-9307-08d950809f0d\",\n  \"transactionId\": \"p9vhkuj92yav\",\n  \"clientTransactionId\": \"client-txn-54c8c9bc\",\n  \"status\": \"PENDING\",\n  \"statusInfo\": {\n    \"reasonCode\": \"-1\",\n    \"message\": \"OK\"\n  },\n  \"notificationType\": \"PAYMENT_INITIATE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "162fed6f-4ac9-4c76-9b7e-3e01daba349e",
+          "name": "Payment finalize notification",
+          "request": {
+            "name": "Payment finalize notification",
+            "description": {
+              "content": "Notifies you about updates on finalize. The exact path of the request is configured through our portal.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "notifications",
+                "paymentFinalize"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notificationId\": \"<uuid>\",\n  \"transactionId\": \"<string>\",\n  \"clientTransactionId\": \"<string>\",\n  \"payerDetails\": {\n    \"paymentToken\": \"<string>\"\n  },\n  \"status\": \"<string>\",\n  \"statusInfo\": {\n    \"reasonCode\": \"<string>\",\n    \"message\": \"<string>\"\n  },\n  \"notificationType\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "43a6d66c-28da-4d9a-bbf7-3ad535f5b4ee",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "notifications",
+                    "paymentFinalize"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"notificationId\": \"fc5adbcd-5f08-4d09-9307-08d950809f0d\",\n  \"transactionId\": \"p9vhkuj92yav\",\n  \"clientTransactionId\": \"client-txn-54c8c9bc\",\n  \"status\": \"APPROVED\",\n  \"statusInfo\": {\n    \"reasonCode\": \"-1\",\n    \"message\": \"OK\"\n  },\n  \"notificationType\": \"PAYMENT_FINALIZE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a2316fe3-6f3d-4a70-8fe6-7844f7381faf",
+          "name": "Payment capture notification",
+          "request": {
+            "name": "Payment capture notification",
+            "description": {
+              "content": "Notifies you about updates on capture. The exact path of the request is configured through our portal.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "notifications",
+                "paymentCapture"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notificationId\": \"<uuid>\",\n  \"transactionId\": \"<string>\",\n  \"clientTransactionId\": \"<string>\",\n  \"amount\": \"<long>\",\n  \"capturedAmount\": \"<long>\",\n  \"status\": \"<string>\",\n  \"statusInfo\": {\n    \"reasonCode\": \"<string>\",\n    \"message\": \"<string>\"\n  },\n  \"notificationType\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8897bc88-e3ec-4af2-938c-2720d6634760",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "notifications",
+                    "paymentCapture"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"notificationId\": \"fc5adbcd-5f08-4d09-9307-08d950809f0d\",\n  \"transactionId\": \"p9vhkuj92yav\",\n  \"clientTransactionId\": \"client-txn-54c8c9bc\",\n  \"amount\": 1000,\n  \"capturedAmount\": 1000,\n  \"status\": \"APPROVED\",\n  \"statusInfo\": {\n    \"reasonCode\": \"-1\",\n    \"message\": \"OK\"\n  },\n  \"notificationType\": \"PAYMENT_CAPTURE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c585f390-6482-4162-b348-f6fecb867560",
+          "name": "Payment refund notification",
+          "request": {
+            "name": "Payment refund notification",
+            "description": {
+              "content": "Notifies you about updates on refund. The exact path of the request is configured through our portal.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "notifications",
+                "paymentRefund"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notificationId\": \"<uuid>\",\n  \"transactionId\": \"<string>\",\n  \"clientTransactionId\": \"<string>\",\n  \"amount\": \"<long>\",\n  \"refundedAmount\": \"<long>\",\n  \"status\": \"<string>\",\n  \"statusInfo\": {\n    \"reasonCode\": \"<string>\",\n    \"message\": \"<string>\"\n  },\n  \"notificationType\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "4815c8ef-3ae3-4839-8884-dde9c5aa9028",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "notifications",
+                    "paymentRefund"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"notificationId\": \"fc5adbcd-5f08-4d09-9307-08d950809f0d\",\n  \"transactionId\": \"p9vhkuj92yav\",\n  \"clientTransactionId\": \"client-txn-54c8c9bc\",\n  \"amount\": 1000,\n  \"refundedAmount\": 1000,\n  \"status\": \"APPROVED\",\n  \"statusInfo\": {\n    \"reasonCode\": \"-1\",\n    \"message\": \"OK\"\n  },\n  \"notificationType\": \"PAYMENT_REFUND\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.nopan.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "78ce7867-e1e8-47f4-b37d-f41f7e353b77",
+    "name": "Nopan Authentication APIs Webhooks API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Download Nopan Postman collection: [Download](/postman/nopan-api-collection.zip)",
+      "type": "text/plain"
+    }
+  }
+}
