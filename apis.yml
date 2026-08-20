@@ -39,6 +39,17 @@ modified: '2026-07-20'
 tags:
 - Payments
 - Payment Service Provider
+- Account-to-Account
+- Wallet Payments
+- Open Banking
+- PSD2
+- Fintech
+- Europe
+- Tokenization
+- Recurring Payments
+tags_raw:
+- Payments
+- Payment Service Provider
 - Account to Account
 - Wallet Payments
 - Open Banking
@@ -167,6 +178,8 @@ apis:
   humanURL: https://docs.nopan.com/
   baseURL: https://api.nopan.io
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
