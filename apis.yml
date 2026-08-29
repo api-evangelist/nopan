@@ -216,6 +216,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/nopan-capability-edges.yml
+  name: Nopan Business Capability Map
 - type: DeveloperPortal
   url: https://docs.nopan.com/
 - type: Documentation
