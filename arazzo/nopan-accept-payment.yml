@@ -4,46 +4,49 @@ info:
   version: 1.0.0
   summary: Authenticate, initiate a payment for SCA, finalize it, and capture funds.
 sourceDescriptions:
-  - name: nopan
-    url: ../openapi/nopan-openapi-original.yml
-    type: openapi
+- name: authenticationApisApi
+  url: ../openapi/nopan-authentication-apis-api-openapi.yml
+  type: openapi
+- name: paymentProcessingApisApi
+  url: ../openapi/nopan-payment-processing-apis-api-openapi.yml
+  type: openapi
 workflows:
-  - workflowId: acceptAndCapturePayment
-    summary: Get a token, initiate a payment, finalize after SCA, and capture funds.
-    inputs:
-      type: object
-      properties:
-        client_id:
-          type: string
-        scope:
-          type: string
-          default: payments:process
-        processingAccountId:
-          type: string
-        transactionId:
-          type: string
-    steps:
-      - stepId: authenticate
-        operationId: getAccessToken
-        requestBody:
-          contentType: application/x-www-form-urlencoded
-          payload:
-            grant_type: client_credentials
-            client_id: $inputs.client_id
-            scope: $inputs.scope
-        outputs:
-          access_token: $response.body#/access_token
-      - stepId: initiate
-        operationId: initiatePayment
-        outputs:
-          transactionId: $response.body#/transactionId
-      - stepId: finalize
-        operationId: finalizePayment
-      - stepId: capture
-        operationId: capturePayment
-      - stepId: status
-        operationId: getPaymentStatus
-        parameters:
-          - name: transactionId
-            in: path
-            value: $steps.initiate.outputs.transactionId
+- workflowId: acceptAndCapturePayment
+  summary: Get a token, initiate a payment, finalize after SCA, and capture funds.
+  inputs:
+    type: object
+    properties:
+      client_id:
+        type: string
+      scope:
+        type: string
+        default: payments:process
+      processingAccountId:
+        type: string
+      transactionId:
+        type: string
+  steps:
+  - stepId: authenticate
+    operationId: getAccessToken
+    requestBody:
+      contentType: application/x-www-form-urlencoded
+      payload:
+        grant_type: client_credentials
+        client_id: $inputs.client_id
+        scope: $inputs.scope
+    outputs:
+      access_token: $response.body#/access_token
+  - stepId: initiate
+    operationId: initiatePayment
+    outputs:
+      transactionId: $response.body#/transactionId
+  - stepId: finalize
+    operationId: finalizePayment
+  - stepId: capture
+    operationId: capturePayment
+  - stepId: status
+    operationId: getPaymentStatus
+    parameters:
+    - name: transactionId
+      in: path
+      value: $steps.initiate.outputs.transactionId
