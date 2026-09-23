@@ -1,8 +1,8 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   version: v1
   title: Nopan Authentication APIs API
-  description: 'Download Nopan Postman collection: [Download](/postman/nopan-api-collection.zip)'
+  description: 'Download Nopan Postman collection: Download'
 servers:
 - url: https://api.nopan.io
 tags:
@@ -87,7 +87,7 @@ paths:
           description: Bad Request
           content:
             application/json:
-              schema: &id001
+              schema:
                 type: object
                 properties:
                   callId:
@@ -127,7 +127,32 @@ paths:
           description: Forbidden error
           content:
             application/json:
-              schema: *id001
+              schema:
+                type: object
+                properties:
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                  statusInfo:
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                additionalProperties: false
               examples:
                 ForbiddenError:
                   summary: Forbidden error

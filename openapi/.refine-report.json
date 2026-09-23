@@ -1,11 +1,7 @@
 {
   "provider": "nopan",
   "sources": [
-    "nopan-authentication-apis-api-openapi.yml",
-    "nopan-payment-processing-apis-api-openapi.yml",
-    "nopan-reporting-apis-api-openapi.yml",
-    "nopan-testing-apis-api-openapi.yml",
-    "nopan-webhooks-api-openapi.yml"
+    "_original/nopan-openapi-original.yml"
   ],
   "outputs": [
     "nopan-authentication-apis-api-openapi.yml",
@@ -17,6 +13,16 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "nopan-openapi-original.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "nopan-authentication-apis-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nopan-payment-processing-apis-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nopan-reporting-apis-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nopan-testing-apis-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nopan-webhooks-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

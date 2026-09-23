@@ -1,8 +1,8 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   version: v1
-  title: Nopan Authentication APIs Testing APIs API
-  description: 'Download Nopan Postman collection: [Download](/postman/nopan-api-collection.zip)'
+  title: Nopan Testing APIs API
+  description: 'Download Nopan Postman collection: Download'
 servers:
 - url: https://api.nopan.io
 tags:
@@ -83,7 +83,7 @@ paths:
                           - PENDING
                           - DECLINED
                           description: The current state of the transaction<br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small>
-                        statusInfo: &id001
+                        statusInfo:
                           type: object
                           properties:
                             reasonCode:
@@ -119,7 +119,16 @@ paths:
                           - APPROVED
                           - DECLINED
                           description: The current state of the transaction<br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small>
-                        statusInfo: *id001
+                        statusInfo:
+                          type: object
+                          properties:
+                            reasonCode:
+                              type: string
+                              description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                            message:
+                              type: string
+                              description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                          description: The information about the status of the request
                       description: Mock information for the finalize payment step
                     captureStep:
                       type: object
@@ -141,7 +150,16 @@ paths:
                               format: date-time
                               description: 'Timestamp when the transaction was registered in the provider<br/><small>Example: <i>1748699594</i></small>'
                           description: Payment scheme provider details
-                        statusInfo: *id001
+                        statusInfo:
+                          type: object
+                          properties:
+                            reasonCode:
+                              type: string
+                              description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                            message:
+                              type: string
+                              description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                          description: The information about the status of the request
                       description: Mock information for the capture payment step
                     cancelStep:
                       type: object
@@ -152,7 +170,16 @@ paths:
                           - CANCELED
                           - DECLINED
                           description: The current state of the transaction<br/><small>• <b> CANCELED</b> The transaction has been canceled</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small>
-                        statusInfo: *id001
+                        statusInfo:
+                          type: object
+                          properties:
+                            reasonCode:
+                              type: string
+                              description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                            message:
+                              type: string
+                              description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                          description: The information about the status of the request
                       description: Mock information for the cancel payment step
                     refundStep:
                       type: object
@@ -175,7 +202,16 @@ paths:
                               format: date-time
                               description: 'Timestamp when the transaction was registered in the provider<br/><small>Example: <i>1748699594</i></small>'
                           description: Payment scheme provider details
-                        statusInfo: *id001
+                        statusInfo:
+                          type: object
+                          properties:
+                            reasonCode:
+                              type: string
+                              description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                            message:
+                              type: string
+                              description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                          description: The information about the status of the request
                       description: Mock information for the refund payment step
                     chargeStep:
                       type: object
@@ -197,7 +233,16 @@ paths:
                               format: date-time
                               description: 'Timestamp when the transaction was registered in the provider<br/><small>Example: <i>1748699594</i></small>'
                           description: Payment scheme provider details
-                        statusInfo: *id001
+                        statusInfo:
+                          type: object
+                          properties:
+                            reasonCode:
+                              type: string
+                              description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                            message:
+                              type: string
+                              description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                          description: The information about the status of the request
                       description: Mock information for the charge payment step
                   description: Information to be mocked for each of the payment steps
                 scenario:
@@ -255,7 +300,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  statusInfo: *id001
+                  statusInfo:
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
                   callId:
                     type: string
                     description: The request tracing ID
@@ -300,10 +354,19 @@ paths:
           description: Unauthorized
           content:
             application/json:
-              schema: &id002
+              schema:
                 type: object
                 properties:
-                  statusInfo: *id001
+                  statusInfo:
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
                   callId:
                     type: string
                     description: The request tracing ID
@@ -321,51 +384,301 @@ paths:
           description: Forbidden
           content:
             application/json:
-              schema: *id002
+              schema:
+                type: object
+                properties:
+                  statusInfo:
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
         '404':
           description: Not Found
           content:
             application/json:
-              schema: *id002
+              schema:
+                type: object
+                properties:
+                  statusInfo:
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
         '409':
           description: Conflict
           content:
             application/json:
-              schema: *id002
+              schema:
+                type: object
+                properties:
+                  statusInfo:
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
         '422':
           description: Unprocessable Content
           content:
             application/json:
-              schema: *id002
+              schema:
+                type: object
+                properties:
+                  statusInfo:
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
         '423':
           description: Locked
           content:
             application/json:
-              schema: *id002
+              schema:
+                type: object
+                properties:
+                  statusInfo:
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
         '429':
           description: Too Many Requests
           content:
             application/json:
-              schema: *id002
+              schema:
+                type: object
+                properties:
+                  statusInfo:
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
         '500':
           description: Internal Server Error
           content:
             application/json:
-              schema: *id002
+              schema:
+                type: object
+                properties:
+                  statusInfo:
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
         '501':
           description: Not Implemented
           content:
             application/json:
-              schema: *id002
+              schema:
+                type: object
+                properties:
+                  statusInfo:
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
         '502':
           description: Bad Gateway
           content:
             application/json:
-              schema: *id002
+              schema:
+                type: object
+                properties:
+                  statusInfo:
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
         '504':
           description: Gateway Timeout
           content:
             application/json:
-              schema: *id002
+              schema:
+                type: object
+                properties:
+                  statusInfo:
+                    type: object
+                    properties:
+                      reasonCode:
+                        type: string
+                        description: 'Code of the status response<br/><small>Example: <i>-1</i></small>'
+                      message:
+                        type: string
+                        description: 'Description of the current status response<br/><small>Example: <i>Awaiting user consent</i></small>'
+                    description: The information about the status of the request
+                  callId:
+                    type: string
+                    description: The request tracing ID
+                  status:
+                    type: string
+                    enum:
+                    - ACCEPTED
+                    - PENDING
+                    - APPROVED
+                    - DECLINED
+                    - CANCELED
+                    description: The current state of the transaction<br/><small>• <b> ACCEPTED</b> Refund request received and awaiting processing</small><br/><small>• <b> PENDING</b> The transaction has reached the provider and waits for SCA</small><br/><small>• <b> APPROVED</b> The transaction has been accepted by the provider</small><br/><small>• <b> DECLINED</b> The transaction has been declined</small><br/><small>• <b> CANCELED</b> The transaction has been canceled</small>
+                additionalProperties: false
       summary: Mock payment flow
       description: Mocks a payment flow. Mock will match requests using processingAccountId and key.

@@ -1,8 +1,8 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   version: v1
-  title: Nopan Authentication APIs Webhooks API
-  description: 'Download Nopan Postman collection: [Download](/postman/nopan-api-collection.zip)'
+  title: Nopan Webhooks API
+  description: 'Download Nopan Postman collection: Download'
 servers:
 - url: https://api.nopan.io
 tags:
